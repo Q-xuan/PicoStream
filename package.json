@@ -1,0 +1,32 @@
+{
+  "name": "picostream",
+  "version": "0.1.0",
+  "description": "Drop-in streaming CSS for a local agent. No build. No framework.",
+  "license": "MIT",
+  "style": "picostream.css",
+  "main": "picostream.css",
+  "exports": {
+    ".": "./picostream.css",
+    "./picostream.css": "./picostream.css"
+  },
+  "files": [
+    "picostream.css",
+    "DESIGN.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Q-xuan/PicoStream.git"
+  },
+  "homepage": "https://q-xuan.github.io/PicoStream/prototype/",
+  "bugs": {
+    "url": "https://github.com/Q-xuan/PicoStream/issues"
+  },
+  "keywords": [
+    "css",
+    "streaming",
+    "agent"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
