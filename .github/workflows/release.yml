@@ -106,12 +106,12 @@ jobs:
           fi
           npm pack --pack-destination dist
           unzip -l "dist/picostream-${TAG}.zip"
-          tar -tzf dist/picostream-*.tgz
+          tar -tzf dist/*.tgz
 
       - uses: actions/upload-artifact@v4
         with:
           name: picostream-${{ needs.tag.outputs.tag }}
-          path: dist/picostream-*
+          path: dist/*
 
       - uses: actions/configure-pages@v5
         if: github.event_name != 'pull_request'
@@ -146,7 +146,7 @@ jobs:
         run: |
           set -euo pipefail
           shopt -s nullglob
-          files=(dist/picostream-*.zip dist/picostream-*.tgz)
+          files=(dist/*.zip dist/*.tgz)
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "${files[@]}" --clobber
           else
@@ -176,8 +176,8 @@ jobs:
           ver="${TAG#v}"
           npm version "$ver" --no-git-tag-version --allow-same-version
 
-          if npm view "picostream@${ver}" version >/dev/null 2>&1; then
-            echo "picostream@${ver} already on npm"
+          if npm view "@yuseus/picostream@${ver}" version >/dev/null 2>&1; then
+            echo "@yuseus/picostream@${ver} already on npm"
             exit 0
           fi
 
@@ -186,13 +186,13 @@ jobs:
             exit 0
           fi
 
-          if npm view picostream name >/dev/null 2>&1; then
+          if npm view @yuseus/picostream name >/dev/null 2>&1; then
             npm publish --access public --provenance
             exit 0
           fi
 
-          echo "::warning::picostream is not on npm yet. First publish from an npm account: npm login && npm publish --access public"
-          echo "Then npmjs.com → picostream → Trusted Publisher → GitHub Actions"
+          echo "::warning::@yuseus/picostream is not on npm yet. First publish: npm publish --access public"
+          echo "Then npmjs.com → @yuseus/picostream → Trusted Publisher → GitHub Actions"
           echo "  owner Q-xuan  repo PicoStream  workflow release.yml  allow publish"
 
   pages:
