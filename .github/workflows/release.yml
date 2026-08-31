@@ -176,8 +176,8 @@ jobs:
           ver="${TAG#v}"
           npm version "$ver" --no-git-tag-version --allow-same-version
 
-          if npm view "@yuseus/picostream@${ver}" version >/dev/null 2>&1; then
-            echo "@yuseus/picostream@${ver} already on npm"
+          if npm view "wetink@${ver}" version >/dev/null 2>&1; then
+            echo "wetink@${ver} already on npm"
             exit 0
           fi
 
@@ -186,13 +186,13 @@ jobs:
             exit 0
           fi
 
-          if npm view @yuseus/picostream name >/dev/null 2>&1; then
+          if npm view wetink name >/dev/null 2>&1; then
             npm publish --access public --provenance
             exit 0
           fi
 
-          echo "::warning::@yuseus/picostream is not on npm yet. First publish: npm publish --access public"
-          echo "Then npmjs.com → @yuseus/picostream → Trusted Publisher → GitHub Actions"
+          echo "::warning::wetink is not on npm yet. First publish: npm publish --access public"
+          echo "Then npmjs.com → wetink → Trusted Publisher → GitHub Actions"
           echo "  owner Q-xuan  repo PicoStream  workflow release.yml  allow publish"
 
   pages:

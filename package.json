@@ -1,5 +1,5 @@
 {
-  "name": "@yuseus/picostream",
+  "name": "wetink",
   "version": "0.1.0",
   "description": "Drop-in streaming CSS for a local agent. No build. No framework.",
   "license": "MIT",

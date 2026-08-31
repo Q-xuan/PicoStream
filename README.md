@@ -18,13 +18,13 @@ GitHub Pages：
 
 推 `main` 会打下一个 patch tag（没有 tag 则从 `v0.1.0` 起）、打包 zip / npm tarball、发 Release、部署 Pages，包已在 npm 上则再发一版。手动：Actions → release → Run workflow，可填 `vX.Y.Z`。本地打 tag：`git tag vX.Y.Z && git push origin vX.Y.Z`。若 Actions 里 `github-pages` 环境要批准，点一次即可。
 
-第一次上 npm 要本机发一版（之后 CI 用 Trusted Publisher，不必再放 token）。未加 scope 的 `picostream` 和已有的 `pico-stream` 太像，npm 不让用，包名是 `@yuseus/picostream`：
+第一次上 npm 要本机发一版（之后 CI 用 Trusted Publisher，不必再放 token）。未加 scope 的 `picostream` 和已有的 `pico-stream` 太像，npm 不让用。包名走定调里的湿墨：`wetink`。产品名仍是 PicoStream。
 
 ```
 npm publish --access public
 ```
 
-然后到 npmjs.com → `@yuseus/picostream` → Trusted Publisher，填 `Q-xuan` / `PicoStream` / `release.yml`，允许 publish。有 `NPM_TOKEN` secret 也可以，CI 会走 token。
+然后到 npmjs.com → wetink → Trusted Publisher，填 `Q-xuan` / `PicoStream` / `release.yml`，允许 publish。有 `NPM_TOKEN` secret 也可以，CI 会走 token。
 
 ## 引入
 
@@ -36,18 +36,18 @@ npm publish --access public
 npm（上架后）：
 
 ```
-npm i @yuseus/picostream
+npm i wetink
 ```
 
 ```html
-<link rel="stylesheet" href="node_modules/@yuseus/picostream/picostream.css" />
+<link rel="stylesheet" href="node_modules/wetink/picostream.css" />
 ```
 
 CDN 跟 npm，不必另发：
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yuseus/picostream/picostream.css" />
-<link rel="stylesheet" href="https://unpkg.com/@yuseus/picostream/picostream.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wetink/picostream.css" />
+<link rel="stylesheet" href="https://unpkg.com/wetink/picostream.css" />
 ```
 
 字体按需加载 Inter + Noto Serif SC / Lora；不加载则走系统回退。亮/暗：`html.dark` 或 `data-theme="dark"`。语言：`html lang`。`:lang(en)` 时正文衬线改走 Lora，匾额字距收紧并大写。短匾由接入方按语言填写，CSS 不写死文案。
