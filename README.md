@@ -5,6 +5,19 @@ Drop-in streaming CSS for a local agent. No build. No framework.
 
 主题：**石上墨迹**。粉墙黛瓦、朱红游廊、苔石干径、漏窗框景。不贴园林纹样。
 
+## 演示
+
+GitHub Pages：
+
+- 玩场：https://q-xuan.github.io/PicoStream/prototype/
+- harness：https://q-xuan.github.io/PicoStream/prototype/harness.html
+
+`?theme=light|dark`，`?lang=zh|en`，`?cut=1`。harness 另有 `?tape=dsh|headless|pi|paste`，`?speed=0.5|1|2|0`。
+
+本地：仓库根目录 `python3 -m http.server 8080`，打开 http://127.0.0.1:8080/prototype/ 。
+
+第一次发布：仓库 Settings → Pages → Source 选 **GitHub Actions**。此后推 `main` 会部署。推到 `main` 之前可在 Actions 里对 `pages` 工作流点 Run workflow。
+
 ## 引入
 
 ```html

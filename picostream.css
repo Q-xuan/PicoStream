@@ -93,10 +93,16 @@ html.ps-page ::selection {
   align-items: center;
   justify-content: space-between;
   gap: 0.65rem 1.25rem;
-  padding: 1.25rem 0;
-  background: color-mix(in srgb, var(--ps-bg) 78%, transparent);
-  backdrop-filter: blur(8px) saturate(1.4);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ps-ink) 18%, transparent);
+  padding: 1.15rem 0 1rem;
+  background: color-mix(in srgb, var(--ps-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 0 var(--ps-line);
+}
+
+.ps-banner.ps-shell {
+  width: 100%;
+  margin-inline: 0;
+  padding-inline: max(1.25rem, calc((100% - var(--ps-measure)) / 2));
 }
 
 .ps-banner strong {
@@ -496,6 +502,7 @@ details.ps-think p { margin: 0; padding-left: var(--ps-mark); }
 
 @media (max-width: 40rem) {
   .ps-shell { width: min(var(--ps-measure), calc(100% - 1.75rem)); }
+  .ps-banner.ps-shell { padding-inline: max(0.875rem, calc((100% - var(--ps-measure)) / 2)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
