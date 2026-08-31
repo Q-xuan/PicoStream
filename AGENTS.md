@@ -1,4 +1,4 @@
-# PicoStream
+# wetink
 
 交付物是一份无构建 CSS。定调在 [`DESIGN.md`](DESIGN.md)，已锁。  
 石上墨迹。纸是粉墙，字是墨。栏只有回合左边那一条。

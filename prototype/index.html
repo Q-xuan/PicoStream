@@ -1,35 +1,35 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="ps-page">
+<html lang="zh-CN" class="wet-page">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PicoStream</title>
+  <title>wetink</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../picostream.css" />
+  <link rel="stylesheet" href="../wetink.css" />
   <style>
     main { padding: 2.5rem 0 5rem; }
     h1 {
       margin: 0 0 0.35rem;
-      font-family: var(--ps-serif);
+      font-family: var(--wet-serif);
       font-size: 1.85rem;
       font-weight: 600;
       letter-spacing: 0.04em;
-      color: var(--ps-ink);
+      color: var(--wet-ink);
     }
     .lede {
       margin: 0 0 2.5rem;
-      font-family: var(--ps-serif);
+      font-family: var(--wet-serif);
       font-size: 1.05rem;
     }
-    h2.ps-label {
+    h2.wet-label {
       margin: 2.75rem 0 0.75rem;
       font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--ps-ink);
+      color: var(--wet-ink);
     }
     .note { margin: 0 0 1.25rem; }
     .row { display: flex; gap: 1rem; margin: 0 0 1rem; }
@@ -38,32 +38,32 @@
       gap: 1rem;
       font-size: 0.875rem;
     }
-    .nav a { color: var(--ps-muted); text-decoration: none; }
-    .nav a:hover { color: var(--ps-ink); }
+    .nav a { color: var(--wet-muted); text-decoration: none; }
+    .nav a:hover { color: var(--wet-ink); }
     .nav button, .row button {
       appearance: none;
       border: 0;
       background: none;
       padding: 0;
       font: inherit;
-      color: var(--ps-muted);
+      color: var(--wet-muted);
       cursor: pointer;
     }
     .row button {
       text-decoration: underline;
       text-underline-offset: 2px;
-      text-decoration-color: var(--ps-faint);
+      text-decoration-color: var(--wet-faint);
     }
     .nav button[aria-pressed="true"],
     .nav button:hover,
-    .row button:hover { color: var(--ps-ink); }
+    .row button:hover { color: var(--wet-ink); }
     .grid { display: grid; gap: 1.75rem; }
     footer { padding: 1.25rem 0 2rem; font-size: 0.8rem; }
   </style>
 </head>
 <body>
-  <header class="ps-banner ps-shell">
-    <strong>PicoStream</strong>
+  <header class="wet-banner wet-shell">
+    <strong>wetink</strong>
     <div class="nav">
       <a href="harness.html">harness</a>
       <button type="button" id="to-light" aria-pressed="true">light</button>
@@ -73,94 +73,94 @@
     </div>
   </header>
 
-  <main class="ps-shell">
+  <main class="wet-shell">
     <h1 data-i18n="title"></h1>
     <p class="lede" data-i18n="lede"></p>
 
-    <h2 class="ps-label" data-i18n="sessionLabel"></h2>
+    <h2 class="wet-label" data-i18n="sessionLabel"></h2>
     <p class="note" data-i18n="sessionNote"></p>
     <div class="row">
       <button type="button" id="replay" data-i18n="replay"></button>
       <button type="button" id="cut" data-i18n="cut"></button>
     </div>
-    <div class="ps-thread" id="session"></div>
+    <div class="wet-thread" id="session"></div>
 
-    <h2 class="ps-label" data-i18n="specLabel"></h2>
+    <h2 class="wet-label" data-i18n="specLabel"></h2>
     <p class="note" data-i18n="specNote"></p>
     <div class="grid">
-      <section class="ps-turn" data-role="assistant" data-stream="thinking">
-        <p class="ps-meta" data-i18n="plaque.think"></p>
-        <details class="ps-think">
-          <summary><span data-i18n="spec.thinkPeek"></span><span class="ps-caret" aria-hidden="true"></span></summary>
+      <section class="wet-turn" data-role="assistant" data-stream="thinking">
+        <p class="wet-meta" data-i18n="plaque.think"></p>
+        <details class="wet-think">
+          <summary><span data-i18n="spec.thinkPeek"></span><span class="wet-caret" aria-hidden="true"></span></summary>
           <p data-i18n="spec.thinkBody"></p>
         </details>
       </section>
 
-      <section class="ps-turn" data-role="assistant" data-stream="typing">
-        <p class="ps-meta" data-i18n="plaque.write"></p>
-        <p class="ps-voice" data-tail><span data-i18n="spec.write"></span><span class="ps-caret" aria-hidden="true"></span></p>
+      <section class="wet-turn" data-role="assistant" data-stream="typing">
+        <p class="wet-meta" data-i18n="plaque.write"></p>
+        <p class="wet-voice" data-tail><span data-i18n="spec.write"></span><span class="wet-caret" aria-hidden="true"></span></p>
       </section>
 
-      <section class="ps-turn" data-role="assistant" data-stream="tool">
-        <p class="ps-meta" data-i18n="plaque.tool"></p>
-        <details class="ps-think">
+      <section class="wet-turn" data-role="assistant" data-stream="tool">
+        <p class="wet-meta" data-i18n="plaque.tool"></p>
+        <details class="wet-think">
           <summary data-i18n="spec.toolPeek"></summary>
           <p data-i18n="spec.toolBody"></p>
         </details>
-        <div class="ps-tools">
-          <details class="ps-tool" data-kind="read" data-state="done">
+        <div class="wet-tools">
+          <details class="wet-tool" data-kind="read" data-state="done">
             <summary><b>read</b> · DESIGN.md</summary>
-            <pre class="ps-code">token · stream · tool</pre>
+            <pre class="wet-code">token · stream · tool</pre>
           </details>
-          <details class="ps-tool" data-kind="read" data-state="done">
+          <details class="wet-tool" data-kind="read" data-state="done">
             <summary><b>read</b> · README.md</summary>
           </details>
-          <details class="ps-tool" data-kind="read" data-state="running">
-            <summary><b>read</b> · picostream.css<span class="ps-caret" aria-hidden="true"></span></summary>
+          <details class="wet-tool" data-kind="read" data-state="running">
+            <summary><b>read</b> · wetink.css<span class="wet-caret" aria-hidden="true"></span></summary>
           </details>
         </div>
       </section>
 
-      <section class="ps-turn" data-role="assistant" data-stream="settled">
-        <p class="ps-meta" data-i18n="plaque.done"></p>
-        <div class="ps-voice">
+      <section class="wet-turn" data-role="assistant" data-stream="settled">
+        <p class="wet-meta" data-i18n="plaque.done"></p>
+        <div class="wet-voice">
           <h3 data-i18n="spec.settledHead"></h3>
           <p data-i18n="spec.settledBody"></p>
           <ul>
             <li data-i18n="spec.settledOld"></li>
             <li data-i18n="spec.settledWet"></li>
           </ul>
-          <div class="ps-tools">
-            <details class="ps-tool" data-kind="read" data-state="done">
+          <div class="wet-tools">
+            <details class="wet-tool" data-kind="read" data-state="done">
               <summary><b>read</b> · DESIGN.md</summary>
-              <pre class="ps-code">token · stream · tool · code · error</pre>
+              <pre class="wet-code">token · stream · tool · code · error</pre>
             </details>
-            <details class="ps-tool" data-kind="write" data-state="done">
-              <summary><b>write</b> · picostream.css</summary>
+            <details class="wet-tool" data-kind="write" data-state="done">
+              <summary><b>write</b> · wetink.css</summary>
             </details>
           </div>
-          <pre class="ps-code" data-lang="css">[data-stream="settled"] .ps-voice { color: var(--ps-muted); }</pre>
+          <pre class="wet-code" data-lang="css">[data-stream="settled"] .wet-voice { color: var(--wet-muted); }</pre>
         </div>
       </section>
 
-      <section class="ps-turn" data-role="assistant" data-stream="steer">
-        <p class="ps-meta" data-i18n="plaque.steer"></p>
-        <p class="ps-voice" data-i18n="spec.steer"></p>
+      <section class="wet-turn" data-role="assistant" data-stream="steer">
+        <p class="wet-meta" data-i18n="plaque.steer"></p>
+        <p class="wet-voice" data-i18n="spec.steer"></p>
       </section>
 
-      <section class="ps-turn" data-role="assistant" data-stream="error">
-        <p class="ps-meta" data-i18n="plaque.break"></p>
-        <p class="ps-voice" data-i18n="spec.break"></p>
+      <section class="wet-turn" data-role="assistant" data-stream="error">
+        <p class="wet-meta" data-i18n="plaque.break"></p>
+        <p class="wet-voice" data-i18n="spec.break"></p>
       </section>
     </div>
   </main>
 
-  <footer class="ps-shell"><span data-i18n="footerLead"></span> <code>picostream.css</code> <span data-i18n="footerTail"></span></footer>
+  <footer class="wet-shell"><span data-i18n="footerLead"></span> <code>wetink.css</code> <span data-i18n="footerTail"></span></footer>
 
   <script>
     const I18N = {
       zh: {
-        pageTitle: "PicoStream",
+        pageTitle: "wetink",
         title: "石上墨迹",
         lede: "粉墙黛瓦上的流式体感。湿思考最多三行，干了收成一行。朱红是游廊，青紫是断口，改口走黛。",
         sessionLabel: "回合",
@@ -197,7 +197,7 @@
         "play.cut": "已打断。栏是虚线，色走青紫，不跟朱红游廊抢。"
       },
       en: {
-        pageTitle: "PicoStream",
+        pageTitle: "wetink",
         title: "Ink on Stone",
         lede: "Streaming on plaster and ink. Wet thought shows three lines; dry thought keeps one. Live is cinnabar. Break is violet. Steer is ink.",
         sessionLabel: "Turn",
@@ -321,19 +321,19 @@
 
     function mount() {
       session.innerHTML = `
-        <section class="ps-turn" data-role="user">
-          <p class="ps-meta">${t("plaque.ask")}</p>
-          <p class="ps-voice">${t("play.ask")}</p>
+        <section class="wet-turn" data-role="user">
+          <p class="wet-meta">${t("plaque.ask")}</p>
+          <p class="wet-voice">${t("play.ask")}</p>
         </section>
-        <section class="ps-turn" data-role="assistant" data-stream="thinking" id="bot">
-          <p class="ps-meta">${t("plaque.reply")}</p>
-          <details class="ps-think" id="reason" hidden>
+        <section class="wet-turn" data-role="assistant" data-stream="thinking" id="bot">
+          <p class="wet-meta">${t("plaque.reply")}</p>
+          <details class="wet-think" id="reason" hidden>
             <summary id="peek"></summary>
             <p id="reason-body"></p>
           </details>
-          <div class="ps-tools" id="tools" hidden></div>
-          <div class="ps-voice" id="voice"></div>
-          <span class="ps-caret" aria-hidden="true"></span>
+          <div class="wet-tools" id="tools" hidden></div>
+          <div class="wet-voice" id="voice"></div>
+          <span class="wet-caret" aria-hidden="true"></span>
         </section>`;
     }
 
@@ -348,12 +348,12 @@
       const reasonBody = document.getElementById("reason-body");
       const tools = document.getElementById("tools");
       const voice = document.getElementById("voice");
-      const caret = bot.querySelector(":scope > .ps-caret");
+      const caret = bot.querySelector(":scope > .wet-caret");
       const spoken = t("play.spoken");
 
       function think(full, wet) {
         reason.hidden = false;
-        reason.classList.add("ps-enter");
+        reason.classList.add("wet-enter");
         reason.open = false;
         const parts = clauses(full);
         const take = wet ? parts.slice(-3) : parts.slice(-1);
@@ -373,7 +373,7 @@
       bot.dataset.state = "running";
       tools.hidden = false;
       const read = document.createElement("details");
-      read.className = "ps-tool ps-enter";
+      read.className = "wet-tool wet-enter";
       read.dataset.kind = "read";
       read.dataset.state = "running";
       read.open = true;
@@ -387,10 +387,10 @@
       await later(400);
       if (gone()) return;
       read.open = false;
-      read.insertAdjacentHTML("beforeend", '<pre class="ps-code">token · stream · tool · code · error</pre>');
+      read.insertAdjacentHTML("beforeend", '<pre class="wet-code">token · stream · tool · code · error</pre>');
 
       const read2 = document.createElement("details");
-      read2.className = "ps-tool ps-enter";
+      read2.className = "wet-tool wet-enter";
       read2.dataset.kind = "read";
       read2.dataset.state = "running";
       read2.open = true;
@@ -406,11 +406,11 @@
       read2.open = false;
 
       const write = document.createElement("details");
-      write.className = "ps-tool ps-enter";
+      write.className = "wet-tool wet-enter";
       write.dataset.kind = "write";
       write.dataset.state = "running";
       write.open = true;
-      write.innerHTML = "<summary><b>write</b> · picostream.css</summary>";
+      write.innerHTML = "<summary><b>write</b> · wetink.css</summary>";
       tools.appendChild(write);
       write.querySelector("summary").appendChild(caret);
 
@@ -437,10 +437,10 @@
 
       if (gone()) return;
       const fence = document.createElement("pre");
-      fence.className = "ps-code ps-enter";
+      fence.className = "wet-code wet-enter";
       fence.dataset.lang = "html";
       fence.dataset.tail = "";
-      fence.textContent = '<section class="ps-turn" data-role="assistant" data-stream="typing">';
+      fence.textContent = '<section class="wet-turn" data-role="assistant" data-stream="typing">';
       delete p.dataset.tail;
       voice.appendChild(fence);
 
@@ -462,7 +462,7 @@
       if (voice && !voice.textContent.trim()) {
         voice.innerHTML = "<p>" + t("play.cut") + "</p>";
       }
-      bot.querySelectorAll(".ps-caret").forEach((n) => n.remove());
+      bot.querySelectorAll(".wet-caret").forEach((n) => n.remove());
     }
 
     document.getElementById("replay").onclick = play;

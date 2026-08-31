@@ -98,20 +98,20 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site dist
-          cp index.html picostream.css _site/
+          cp index.html wetink.css _site/
           cp -r prototype _site/prototype
-          zip -X -j "dist/picostream-${TAG}.zip" picostream.css README.md DESIGN.md LICENSE
+          zip -X -j "dist/wetink-${TAG}.zip" wetink.css README.md DESIGN.md LICENSE
           if printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
             npm version "${TAG#v}" --no-git-tag-version --allow-same-version
           fi
           npm pack --pack-destination dist
-          unzip -l "dist/picostream-${TAG}.zip"
-          tar -tzf dist/picostream-*.tgz
+          unzip -l "dist/wetink-${TAG}.zip"
+          tar -tzf dist/*.tgz
 
       - uses: actions/upload-artifact@v4
         with:
-          name: picostream-${{ needs.tag.outputs.tag }}
-          path: dist/picostream-*
+          name: wetink-${{ needs.tag.outputs.tag }}
+          path: dist/*
 
       - uses: actions/configure-pages@v5
         if: github.event_name != 'pull_request'
@@ -137,7 +137,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: picostream-${{ needs.tag.outputs.tag }}
+          name: wetink-${{ needs.tag.outputs.tag }}
           path: dist
 
       - env:
@@ -146,7 +146,7 @@ jobs:
         run: |
           set -euo pipefail
           shopt -s nullglob
-          files=(dist/picostream-*.zip dist/picostream-*.tgz)
+          files=(dist/*.zip dist/*.tgz)
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "${files[@]}" --clobber
           else
@@ -176,8 +176,8 @@ jobs:
           ver="${TAG#v}"
           npm version "$ver" --no-git-tag-version --allow-same-version
 
-          if npm view "picostream@${ver}" version >/dev/null 2>&1; then
-            echo "picostream@${ver} already on npm"
+          if npm view "wetink@${ver}" version >/dev/null 2>&1; then
+            echo "wetink@${ver} already on npm"
             exit 0
           fi
 
@@ -186,14 +186,14 @@ jobs:
             exit 0
           fi
 
-          if npm view picostream name >/dev/null 2>&1; then
+          if npm view wetink name >/dev/null 2>&1; then
             npm publish --access public --provenance
             exit 0
           fi
 
-          echo "::warning::picostream is not on npm yet. First publish from an npm account: npm login && npm publish --access public"
-          echo "Then npmjs.com → picostream → Trusted Publisher → GitHub Actions"
-          echo "  owner Q-xuan  repo PicoStream  workflow release.yml  allow publish"
+          echo "::warning::wetink is not on npm yet. First publish: npm publish --access public"
+          echo "Then npmjs.com → wetink → Trusted Publisher → GitHub Actions"
+          echo "  owner Q-xuan  repo wetink  workflow release.yml  allow publish"
 
   pages:
     needs: [tag, package]

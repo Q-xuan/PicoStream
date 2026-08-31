@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="ps-page">
+<html lang="zh-CN" class="wet-page">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PicoStream · harness</title>
+  <title>wetink · harness</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../picostream.css" />
+  <link rel="stylesheet" href="../wetink.css" />
   <style>
     main { padding: 2.5rem 0 5rem; }
     h1 {
       margin: 0 0 0.35rem;
-      font-family: var(--ps-serif);
+      font-family: var(--wet-serif);
       font-size: 1.85rem;
       font-weight: 600;
       letter-spacing: 0.04em;
-      color: var(--ps-ink);
+      color: var(--wet-ink);
     }
-    .lede { margin: 0 0 2rem; font-family: var(--ps-serif); font-size: 1.05rem; }
+    .lede { margin: 0 0 2rem; font-family: var(--wet-serif); font-size: 1.05rem; }
     .note { margin: 0 0 1.25rem; }
     .row { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0 0 1rem; align-items: center; }
     .nav, .row button, .row a {
@@ -26,31 +26,31 @@
       gap: 1rem;
       font-size: 0.875rem;
     }
-    .nav a { color: var(--ps-muted); text-decoration: none; }
-    .nav a:hover, .nav a[aria-current="page"] { color: var(--ps-ink); }
+    .nav a { color: var(--wet-muted); text-decoration: none; }
+    .nav a:hover, .nav a[aria-current="page"] { color: var(--wet-ink); }
     .nav button, .row button {
       appearance: none;
       border: 0;
       background: none;
       padding: 0;
       font: inherit;
-      color: var(--ps-muted);
+      color: var(--wet-muted);
       cursor: pointer;
     }
     .row button {
       text-decoration: underline;
       text-underline-offset: 2px;
-      text-decoration-color: var(--ps-faint);
+      text-decoration-color: var(--wet-faint);
     }
     .nav button[aria-pressed="true"],
     .row button[aria-pressed="true"],
     .nav button:hover,
-    .row button:hover { color: var(--ps-ink); }
+    .row button:hover { color: var(--wet-ink); }
     #tick {
       margin: 0 0 1.5rem;
       font-size: 0.8rem;
-      font-family: var(--ps-mono);
-      color: var(--ps-faint);
+      font-family: var(--wet-mono);
+      color: var(--wet-faint);
     }
     #paste {
       display: none;
@@ -58,10 +58,10 @@
       min-height: 8rem;
       margin: 0 0 1rem;
       padding: 0.75rem;
-      border: 1px solid var(--ps-line);
-      background: var(--ps-well);
-      color: var(--ps-ink);
-      font: 0.8rem/1.5 var(--ps-mono);
+      border: 1px solid var(--wet-line);
+      background: var(--wet-well);
+      color: var(--wet-ink);
+      font: 0.8rem/1.5 var(--wet-mono);
       resize: vertical;
     }
     #paste.is-on { display: block; }
@@ -70,8 +70,8 @@
   </style>
 </head>
 <body>
-  <header class="ps-banner ps-shell">
-    <strong>PicoStream</strong>
+  <header class="wet-banner wet-shell">
+    <strong>wetink</strong>
     <div class="nav">
       <a href="index.html" data-i18n="navPlay"></a>
       <a href="harness.html" aria-current="page">harness</a>
@@ -82,7 +82,7 @@
     </div>
   </header>
 
-  <main class="ps-shell">
+  <main class="wet-shell">
     <h1 data-i18n="title"></h1>
     <p class="lede" data-i18n="lede"></p>
     <p class="note" data-i18n="note"></p>
@@ -102,15 +102,15 @@
     </div>
     <textarea id="paste" spellcheck="false" data-i18n-placeholder="pasteHint"></textarea>
     <p id="tick"></p>
-    <div class="ps-thread" id="session"></div>
+    <div class="wet-thread" id="session"></div>
   </main>
 
-  <footer class="ps-shell"><span data-i18n="footerLead"></span> <a href="index.html">prototype</a> · <code>picostream.css</code></footer>
+  <footer class="wet-shell"><span data-i18n="footerLead"></span> <a href="index.html">prototype</a> · <code>wetink.css</code></footer>
 
   <script>
     const I18N = {
       zh: {
-        pageTitle: "PicoStream · harness",
+        pageTitle: "wetink · harness",
         title: "把他们的流接到纸上",
         lede: "DeepSeek Harness 和 Pi Web 是自己的壳。CSS 套不进去。能测的是：用他们的事件流喂这份契约。",
         note: "DSH 是密流标本。快照是 harness 自己的 headless 测试日志。Pi 是官方线协议同题重写，不是录下来的 pi-web 页。",
@@ -133,7 +133,7 @@
         cutLine: "已打断。栏是虚线，色走青紫。"
       },
       en: {
-        pageTitle: "PicoStream · harness",
+        pageTitle: "wetink · harness",
         title: "Their stream, this paper",
         lede: "DeepSeek Harness and Pi Web own their shells. This CSS will not restyle them. What we can test is their event stream on this contract.",
         note: "DSH is a dense tape. Snapshot is DSH's own headless test log. Pi is the official wire, same turn, not a recorded pi-web page.",
@@ -351,33 +351,33 @@
         this.plaque("plaque.steer");
       }
       const turn = document.createElement("section");
-      turn.className = "ps-turn";
+      turn.className = "wet-turn";
       turn.dataset.role = "user";
-      turn.innerHTML = '<p class="ps-meta"></p><p class="ps-voice"></p>';
-      turn.querySelector(".ps-meta").textContent = t("plaque.ask");
-      turn.querySelector(".ps-voice").textContent = text;
+      turn.innerHTML = '<p class="wet-meta"></p><p class="wet-voice"></p>';
+      turn.querySelector(".wet-meta").textContent = t("plaque.ask");
+      turn.querySelector(".wet-voice").textContent = text;
       session.appendChild(turn);
     };
 
     Thread.prototype.ensureBot = function () {
       if (this.bot) return;
       this.bot = document.createElement("section");
-      this.bot.className = "ps-turn";
+      this.bot.className = "wet-turn";
       this.bot.dataset.role = "assistant";
       this.bot.dataset.stream = "thinking";
       this.bot.innerHTML =
-        '<p class="ps-meta"></p>' +
-        '<details class="ps-think" hidden><summary></summary><p></p></details>' +
-        '<div class="ps-tools" hidden></div>' +
-        '<div class="ps-voice"></div>' +
-        '<span class="ps-caret" aria-hidden="true"></span>';
-      this.meta = this.bot.querySelector(".ps-meta");
-      this.reason = this.bot.querySelector(".ps-think");
+        '<p class="wet-meta"></p>' +
+        '<details class="wet-think" hidden><summary></summary><p></p></details>' +
+        '<div class="wet-tools" hidden></div>' +
+        '<div class="wet-voice"></div>' +
+        '<span class="wet-caret" aria-hidden="true"></span>';
+      this.meta = this.bot.querySelector(".wet-meta");
+      this.reason = this.bot.querySelector(".wet-think");
       this.peek = this.reason.querySelector("summary");
       this.reasonBody = this.reason.querySelector("p");
-      this.tools = this.bot.querySelector(".ps-tools");
-      this.voice = this.bot.querySelector(".ps-voice");
-      this.caret = this.bot.querySelector(".ps-caret");
+      this.tools = this.bot.querySelector(".wet-tools");
+      this.voice = this.bot.querySelector(".wet-voice");
+      this.caret = this.bot.querySelector(".wet-caret");
       this.plaque("plaque.reply");
       session.appendChild(this.bot);
       this.wet = true;
@@ -419,7 +419,7 @@
       let node = this.slots[id];
       if (!node) {
         node = document.createElement("details");
-        node.className = "ps-tool ps-enter";
+        node.className = "wet-tool wet-enter";
         node.open = true;
         node.innerHTML = "<summary></summary>";
         this.tools.appendChild(node);
@@ -447,7 +447,7 @@
         let pre = node.querySelector("pre");
         if (!pre) {
           pre = document.createElement("pre");
-          pre.className = "ps-code";
+          pre.className = "wet-code";
           node.appendChild(pre);
         }
         pre.textContent = output;
@@ -460,7 +460,7 @@
       if (this.mode === "fence") {
         if (!node || node.tagName !== "PRE") {
           node = document.createElement("pre");
-          node.className = "ps-code ps-enter";
+          node.className = "wet-code wet-enter";
           this.voice.appendChild(node);
         }
       } else {
@@ -716,17 +716,17 @@
     function interrupt() {
       cut = true;
       clearTimeout(timer);
-      const bot = session.querySelector('.ps-turn[data-role="assistant"]');
+      const bot = session.querySelector('.wet-turn[data-role="assistant"]');
       if (!bot) return;
       bot.dataset.stream = "error";
       delete bot.dataset.state;
-      bot.querySelectorAll(".ps-caret").forEach((n) => n.remove());
-      const voice = bot.querySelector(".ps-voice");
+      bot.querySelectorAll(".wet-caret").forEach((n) => n.remove());
+      const voice = bot.querySelector(".wet-voice");
       if (voice && !voice.textContent.trim()) {
         voice.innerHTML = "<p></p>";
         voice.querySelector("p").textContent = t("cutLine");
       }
-      const meta = bot.querySelector(".ps-meta");
+      const meta = bot.querySelector(".wet-meta");
       if (meta) meta.textContent = t("plaque.break");
     }
 

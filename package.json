@@ -1,25 +1,25 @@
 {
-  "name": "picostream",
+  "name": "wetink",
   "version": "0.1.0",
   "description": "Drop-in streaming CSS for a local agent. No build. No framework.",
   "license": "MIT",
-  "style": "picostream.css",
-  "main": "picostream.css",
+  "style": "wetink.css",
+  "main": "wetink.css",
   "exports": {
-    ".": "./picostream.css",
-    "./picostream.css": "./picostream.css"
+    ".": "./wetink.css",
+    "./wetink.css": "./wetink.css"
   },
   "files": [
-    "picostream.css",
+    "wetink.css",
     "DESIGN.md"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Q-xuan/PicoStream.git"
+    "url": "git+https://github.com/Q-xuan/wetink.git"
   },
-  "homepage": "https://q-xuan.github.io/PicoStream/prototype/",
+  "homepage": "https://q-xuan.github.io/wetink/prototype/",
   "bugs": {
-    "url": "https://github.com/Q-xuan/PicoStream/issues"
+    "url": "https://github.com/Q-xuan/wetink/issues"
   },
   "keywords": [
     "css",

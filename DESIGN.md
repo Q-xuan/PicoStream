@@ -1,7 +1,7 @@
-# PicoStream 定调方案
+# wetink 定调方案
 
 面向本地 agent 开发的 **Astro Nano 风格 AI 流式体感 CSS**。  
-定调已锁。实现落在 `picostream.css`。编码按第一性原理、马斯克原型、轻量化。
+定调已锁。实现落在 `wetink.css`。编码按第一性原理、马斯克原型、轻量化。
 
 ---
 
@@ -43,7 +43,7 @@
 2. **光标**：唯一持续运动的物件，表示「笔还在纸上」。
 3. **干墨**：结束后对比度退回 Nano 正文，画面重新安静。
 
-「耳目一新」来自克制，不来自多一种特效。市面上的流式 UI 几乎都在紫/蓝光里闪。PicoStream 用 **纸墨对比 + 锈铁色活边** 当强调：笔还在，左边就有一条湿痕。
+「耳目一新」来自克制，不来自多一种特效。市面上的流式 UI 几乎都在紫/蓝光里闪。wetink 用 **纸墨对比 + 锈铁色活边** 当强调：笔还在，左边就有一条湿痕。
 
 ---
 
@@ -60,7 +60,7 @@
 | 顶栏浅模糊 | 重玻璃拟态 |
 | 亮/暗，跟随系统 | 多套皮肤 |
 
-Nano 是静态纸。PicoStream 只加一维：**时间**。
+Nano 是静态纸。wetink 只加一维：**时间**。
 
 ---
 
@@ -75,7 +75,7 @@ Nano 是静态纸。PicoStream 只加一维：**时间**。
 | 朱红游廊 | 活边 + caret + 点景方石；只有湿栏是 2px 朱红 |
 | 苔石干径 | 定稿左边改细黛线，槽位不重排 |
 | 漏窗框景 | 代码内凹一线，不当高亮卡片 |
-| 题跋 | `.ps-think` 侧注，不用斜体 |
+| 题跋 | `.wet-think` 侧注，不用斜体 |
 
 - 思考 = 曲径，笔悬着
 - 流式 = 游廊湿墨
@@ -97,19 +97,19 @@ Nano 是静态纸。PicoStream 只加一维：**时间**。
 
 ```css
 :root {
-  --ps-bg: #f4efe4;          /* 粉墙 */
-  --ps-ink: #1a1712;        /* 黛 */
-  --ps-live: #a63d2f;       /* 朱红栏 */
-  --ps-moss: #5e6b4e;       /* 苔石 */
-  --ps-error: #5b21b6;      /* 青紫断口，不跟朱栏抢 */
+  --wet-bg: #f4efe4;          /* 粉墙 */
+  --wet-ink: #1a1712;        /* 黛 */
+  --wet-live: #a63d2f;       /* 朱红栏 */
+  --wet-moss: #5e6b4e;       /* 苔石 */
+  --wet-error: #5b21b6;      /* 青紫断口，不跟朱栏抢 */
 }
 
 html.dark {
-  --ps-bg: #12110d;
-  --ps-ink: #f4efe4;
-  --ps-live: #c45c45;       /* 同一块砖，入夜只抬明度 */
-  --ps-moss: #8a9a74;
-  --ps-error: #c4b5fd;
+  --wet-bg: #12110d;
+  --wet-ink: #f4efe4;
+  --wet-live: #c45c45;       /* 同一块砖，入夜只抬明度 */
+  --wet-moss: #8a9a74;
+  --wet-error: #c4b5fd;
 }
 ```
 
@@ -129,9 +129,9 @@ idle → thinking → live → settled
 HTML 契约只有属性，没有类爆炸：
 
 ```html
-<section class="ps-turn" data-role="assistant" data-stream="thinking">
-  <p class="ps-voice">...</p>
-  <span class="ps-caret" aria-hidden="true"></span>
+<section class="wet-turn" data-role="assistant" data-stream="thinking">
+  <p class="wet-voice">...</p>
+  <span class="wet-caret" aria-hidden="true"></span>
 </section>
 ```
 
@@ -152,16 +152,16 @@ HTML 契约只有属性，没有类爆炸：
 
 | 表面 | 处理 |
 | --- | --- |
-| 思考链 vs 最终回答 | `details.ps-think` 默认折起：湿三行、干一行；不新开主题 |
-| 工具调用/结果 | `.ps-tools` 并栏 + `data-state` + 可选 `data-kind`，Inter 刻痕 |
+| 思考链 vs 最终回答 | `details.wet-think` 默认折起：湿三行、干一行；不新开主题 |
+| 工具调用/结果 | `.wet-tools` 并栏 + `data-state` + 可选 `data-kind`，Inter 刻痕 |
 | 活尾 | `[data-tail]` 标在还在长的节点；没有则整段仍满墨 |
 | 改口 vs 打断 | `steer` 走黛栏；`error` 走青紫虚线 |
-| 代码块 | `.ps-code` / `data-lang`，mono + 淡线框，无高亮皮肤 |
+| 代码块 | `.wet-code` / `data-lang`，mono + 淡线框，无高亮皮肤 |
 | 打字 | `data-stream="typing"` 与 `live` 同义 |
 | 用户打断 / 重试 | `error` 或重新 `typing` |
-| Markdown 生长 | 新块加 `ps-enter`，不整页动画 |
+| Markdown 生长 | 新块加 `wet-enter`，不整页动画 |
 | 长日志刷屏 | 旧 turn 保持 `settled`，只有当前 turn 湿墨 |
-| 接入 | 一份 `picostream.css`，agent 只打属性 |
+| 接入 | 一份 `wetink.css`，agent 只打属性 |
 
 ---
 
@@ -169,7 +169,7 @@ HTML 契约只有属性，没有类爆炸：
 
 1. 本方案
 2. 定调原型
-3. `picostream.css`（无构建交付物）
+3. `wetink.css`（无构建交付物）
 4. 代码块、工具条、思考链、Markdown
 5. `README.md` 接入契约 + `prototype/index.html` 玩场
 

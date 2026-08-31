@@ -15,15 +15,15 @@
 {"type":"tool/call","data":{"callId":"c-read-2","name":"read","arguments":"{\"path\":\"README.md\"}"}}
 {"type":"tool/result","data":{"message":{"source":{"kind":"tool","callId":"c-read-2"},"content":[{"type":"tool-result","toolCallId":"c-read-2","content":[{"type":"text","text":"data-role · data-stream"}],"isError":false}]}}}
 {"type":"assistant/chunk","data":{"chunk":{"type":"block-start","index":3,"blockType":"tool-call"}}}
-{"type":"assistant/chunk","data":{"chunk":{"type":"tool-call-delta","index":3,"id":"c-write","name":"write","argumentsDelta":"{\"path\":\"picostream.css\"}"}}}
-{"type":"assistant/chunk","data":{"chunk":{"type":"block-end","index":3,"block":{"type":"tool-call","id":"c-write","name":"write","arguments":"{\"path\":\"picostream.css\"}"}}}}
-{"type":"tool/call","data":{"callId":"c-write","name":"write","arguments":"{\"path\":\"picostream.css\"}"}}
+{"type":"assistant/chunk","data":{"chunk":{"type":"tool-call-delta","index":3,"id":"c-write","name":"write","argumentsDelta":"{\"path\":\"wetink.css\"}"}}}
+{"type":"assistant/chunk","data":{"chunk":{"type":"block-end","index":3,"block":{"type":"tool-call","id":"c-write","name":"write","arguments":"{\"path\":\"wetink.css\"}"}}}}
+{"type":"tool/call","data":{"callId":"c-write","name":"write","arguments":"{\"path\":\"wetink.css\"}"}}
 {"type":"tool/result","data":{"message":{"source":{"kind":"tool","callId":"c-write"},"content":[{"type":"tool-result","toolCallId":"c-write","content":[{"type":"text","text":"ok"}],"isError":false}]}}}
 {"type":"assistant/chunk","data":{"chunk":{"type":"block-start","index":0,"blockType":"text"}}}
 {"type":"assistant/chunk","data":{"chunk":{"type":"text-delta","index":0,"text":"交付物是一份 CSS。"}}}
 {"type":"assistant/chunk","data":{"chunk":{"type":"text-delta","index":0,"text":"本地 agent 只打 data-role 和 data-stream。"}}}
 {"type":"assistant/chunk","data":{"chunk":{"type":"text-delta","index":0,"text":"思考链用弱墨，工具是石上刻痕。"}}}
-{"type":"assistant/chunk","data":{"chunk":{"type":"text-delta","index":0,"text":"\n\n```html\n<section class=\"ps-turn\" data-role=\"assistant\" data-stream=\"typing\">\n```\n\n"}}}
+{"type":"assistant/chunk","data":{"chunk":{"type":"text-delta","index":0,"text":"\n\n```html\n<section class=\"wet-turn\" data-role=\"assistant\" data-stream=\"typing\">\n```\n\n"}}}
 {"type":"assistant/chunk","data":{"chunk":{"type":"text-delta","index":0,"text":"代码块不另开皮肤。"}}}
 {"type":"assistant/chunk","data":{"chunk":{"type":"block-end","index":0,"block":{"type":"text"}}}}
 {"type":"turn/end","data":{"reason":{"kind":"completed"}}}
