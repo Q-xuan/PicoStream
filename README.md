@@ -16,7 +16,7 @@ GitHub Pages：
 
 本地：仓库根目录 `python3 -m http.server 8080`，打开 http://127.0.0.1:8080/prototype/ 。
 
-推 `main` 会部署。工作流会尝试打开 GitHub Pages；若 Actions 里 `github-pages` 环境要批准，点一次即可。
+推 `main` 会打下一个 patch tag（没有 tag 则从 `v0.1.0` 起）、打包 `picostream.css`、发 Release、部署 Pages。手动：Actions → release → Run workflow，可填 `vX.Y.Z`。本地打 tag：`git tag vX.Y.Z && git push origin vX.Y.Z`。若 Actions 里 `github-pages` 环境要批准，点一次即可。
 
 ## 引入
 
