@@ -16,7 +16,7 @@ GitHub Pages：
 
 本地：仓库根目录 `python3 -m http.server 8080`，打开 http://127.0.0.1:8080/prototype/ 。
 
-第一次发布：仓库 Settings → Pages → Source 选 **GitHub Actions**。此后推 `main` 会部署。推到 `main` 之前可在 Actions 里对 `pages` 工作流点 Run workflow。
+推 `main` 会部署。工作流会尝试打开 GitHub Pages；若 Actions 里 `github-pages` 环境要批准，点一次即可。
 
 ## 引入
 
