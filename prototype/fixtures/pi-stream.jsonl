@@ -16,15 +16,15 @@
 {"type":"tool_execution_start","toolCallId":"c-read-2","toolName":"read","args":{"path":"README.md"}}
 {"type":"tool_execution_end","toolCallId":"c-read-2","toolName":"read","result":{"content":[{"type":"text","text":"data-role · data-stream"}]},"isError":false}
 {"type":"message_update","assistantMessageEvent":{"type":"toolcall_start","contentIndex":3}}
-{"type":"message_update","assistantMessageEvent":{"type":"toolcall_end","contentIndex":3,"toolCall":{"id":"c-write","name":"write","arguments":{"path":"picostream.css"}}}}
-{"type":"tool_execution_start","toolCallId":"c-write","toolName":"write","args":{"path":"picostream.css"}}
+{"type":"message_update","assistantMessageEvent":{"type":"toolcall_end","contentIndex":3,"toolCall":{"id":"c-write","name":"write","arguments":{"path":"wetink.css"}}}}
+{"type":"tool_execution_start","toolCallId":"c-write","toolName":"write","args":{"path":"wetink.css"}}
 {"type":"tool_execution_end","toolCallId":"c-write","toolName":"write","result":{"content":[{"type":"text","text":"ok"}]},"isError":false}
 {"type":"message_update","assistantMessageEvent":{"type":"text_start","contentIndex":4}}
 {"type":"message_update","assistantMessageEvent":{"type":"text_delta","contentIndex":4,"delta":"交付物是一份 CSS。"}}
 {"type":"message_update","assistantMessageEvent":{"type":"text_delta","contentIndex":4,"delta":"本地 agent 只打 data-role 和 data-stream。"}}
 {"type":"message_update","assistantMessageEvent":{"type":"text_delta","contentIndex":4,"delta":"思考链用弱墨，工具是石上刻痕。"}}
-{"type":"message_update","assistantMessageEvent":{"type":"text_delta","contentIndex":4,"delta":"\n\n```html\n<section class=\"ps-turn\" data-role=\"assistant\" data-stream=\"typing\">\n```\n\n"}}
+{"type":"message_update","assistantMessageEvent":{"type":"text_delta","contentIndex":4,"delta":"\n\n```html\n<section class=\"wet-turn\" data-role=\"assistant\" data-stream=\"typing\">\n```\n\n"}}
 {"type":"message_update","assistantMessageEvent":{"type":"text_delta","contentIndex":4,"delta":"代码块不另开皮肤。"}}
-{"type":"message_update","assistantMessageEvent":{"type":"text_end","contentIndex":4,"content":"交付物是一份 CSS。本地 agent 只打 data-role 和 data-stream。思考链用弱墨，工具是石上刻痕。\n\n```html\n<section class=\"ps-turn\" data-role=\"assistant\" data-stream=\"typing\">\n```\n\n代码块不另开皮肤。"}}
+{"type":"message_update","assistantMessageEvent":{"type":"text_end","contentIndex":4,"content":"交付物是一份 CSS。本地 agent 只打 data-role 和 data-stream。思考链用弱墨，工具是石上刻痕。\n\n```html\n<section class=\"wet-turn\" data-role=\"assistant\" data-stream=\"typing\">\n```\n\n代码块不另开皮肤。"}}
 {"type":"message_end","message":{"role":"assistant"}}
 {"type":"turn_end"}

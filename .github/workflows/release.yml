@@ -98,19 +98,19 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site dist
-          cp index.html picostream.css _site/
+          cp index.html wetink.css _site/
           cp -r prototype _site/prototype
-          zip -X -j "dist/picostream-${TAG}.zip" picostream.css README.md DESIGN.md LICENSE
+          zip -X -j "dist/wetink-${TAG}.zip" wetink.css README.md DESIGN.md LICENSE
           if printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
             npm version "${TAG#v}" --no-git-tag-version --allow-same-version
           fi
           npm pack --pack-destination dist
-          unzip -l "dist/picostream-${TAG}.zip"
+          unzip -l "dist/wetink-${TAG}.zip"
           tar -tzf dist/*.tgz
 
       - uses: actions/upload-artifact@v4
         with:
-          name: picostream-${{ needs.tag.outputs.tag }}
+          name: wetink-${{ needs.tag.outputs.tag }}
           path: dist/*
 
       - uses: actions/configure-pages@v5
@@ -137,7 +137,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: picostream-${{ needs.tag.outputs.tag }}
+          name: wetink-${{ needs.tag.outputs.tag }}
           path: dist
 
       - env:
@@ -193,7 +193,7 @@ jobs:
 
           echo "::warning::wetink is not on npm yet. First publish: npm publish --access public"
           echo "Then npmjs.com → wetink → Trusted Publisher → GitHub Actions"
-          echo "  owner Q-xuan  repo PicoStream  workflow release.yml  allow publish"
+          echo "  owner Q-xuan  repo wetink  workflow release.yml  allow publish"
 
   pages:
     needs: [tag, package]
