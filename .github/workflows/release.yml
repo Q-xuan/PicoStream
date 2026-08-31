@@ -100,13 +100,18 @@ jobs:
           mkdir -p _site dist
           cp index.html picostream.css _site/
           cp -r prototype _site/prototype
-          zip -X -j "dist/picostream-${TAG}.zip" picostream.css README.md DESIGN.md
+          zip -X -j "dist/picostream-${TAG}.zip" picostream.css README.md DESIGN.md LICENSE
+          if printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            npm version "${TAG#v}" --no-git-tag-version --allow-same-version
+          fi
+          npm pack --pack-destination dist
           unzip -l "dist/picostream-${TAG}.zip"
+          tar -tzf dist/picostream-*.tgz
 
       - uses: actions/upload-artifact@v4
         with:
           name: picostream-${{ needs.tag.outputs.tag }}
-          path: dist/picostream-*.zip
+          path: dist/picostream-*
 
       - uses: actions/configure-pages@v5
         if: github.event_name != 'pull_request'
@@ -140,12 +145,55 @@ jobs:
           TAG: ${{ needs.tag.outputs.tag }}
         run: |
           set -euo pipefail
-          zip="dist/picostream-${TAG}.zip"
+          shopt -s nullglob
+          files=(dist/picostream-*.zip dist/picostream-*.tgz)
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$zip" --clobber
+            gh release upload "$TAG" "${files[@]}" --clobber
           else
-            gh release create "$TAG" "$zip" --title "$TAG" --generate-notes --verify-tag
+            gh release create "$TAG" "${files[@]}" --title "$TAG" --generate-notes --verify-tag
           fi
+
+  npm:
+    needs: [tag, package]
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - env:
+          TAG: ${{ needs.tag.outputs.tag }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          ver="${TAG#v}"
+          npm version "$ver" --no-git-tag-version --allow-same-version
+
+          if npm view "picostream@${ver}" version >/dev/null 2>&1; then
+            echo "picostream@${ver} already on npm"
+            exit 0
+          fi
+
+          if [ -n "${NPM_TOKEN:-}" ]; then
+            NODE_AUTH_TOKEN="$NPM_TOKEN" npm publish --access public
+            exit 0
+          fi
+
+          if npm view picostream name >/dev/null 2>&1; then
+            npm publish --access public --provenance
+            exit 0
+          fi
+
+          echo "::warning::picostream is not on npm yet. First publish from an npm account: npm login && npm publish --access public"
+          echo "Then npmjs.com → picostream → Trusted Publisher → GitHub Actions"
+          echo "  owner Q-xuan  repo PicoStream  workflow release.yml  allow publish"
 
   pages:
     needs: [tag, package]

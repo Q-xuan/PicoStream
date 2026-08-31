@@ -16,13 +16,39 @@ GitHub Pages：
 
 本地：仓库根目录 `python3 -m http.server 8080`，打开 http://127.0.0.1:8080/prototype/ 。
 
-推 `main` 会打下一个 patch tag（没有 tag 则从 `v0.1.0` 起）、打包 `picostream.css`、发 Release、部署 Pages。手动：Actions → release → Run workflow，可填 `vX.Y.Z`。本地打 tag：`git tag vX.Y.Z && git push origin vX.Y.Z`。若 Actions 里 `github-pages` 环境要批准，点一次即可。
+推 `main` 会打下一个 patch tag（没有 tag 则从 `v0.1.0` 起）、打包 zip / npm tarball、发 Release、部署 Pages，包已在 npm 上则再发一版。手动：Actions → release → Run workflow，可填 `vX.Y.Z`。本地打 tag：`git tag vX.Y.Z && git push origin vX.Y.Z`。若 Actions 里 `github-pages` 环境要批准，点一次即可。
+
+第一次上 npm 要本机发一版（之后 CI 用 Trusted Publisher，不必再放 token）：
+
+```
+npm login
+npm publish --access public
+```
+
+然后到 npmjs.com → picostream → Trusted Publisher，填 `Q-xuan` / `PicoStream` / `release.yml`，允许 publish。有 `NPM_TOKEN` secret 也可以，CI 会走 token。
 
 ## 引入
 
 ```html
 <link rel="stylesheet" href="picostream.css" />
 <html class="ps-page">
+```
+
+npm（上架后）：
+
+```
+npm i picostream
+```
+
+```html
+<link rel="stylesheet" href="node_modules/picostream/picostream.css" />
+```
+
+CDN 跟 npm，不必另发：
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picostream/picostream.css" />
+<link rel="stylesheet" href="https://unpkg.com/picostream/picostream.css" />
 ```
 
 字体按需加载 Inter + Noto Serif SC / Lora；不加载则走系统回退。亮/暗：`html.dark` 或 `data-theme="dark"`。语言：`html lang`。`:lang(en)` 时正文衬线改走 Lora，匾额字距收紧并大写。短匾由接入方按语言填写，CSS 不写死文案。
@@ -91,6 +117,7 @@ GitHub Pages：
 ## 文件
 
 - [`picostream.css`](picostream.css) — 交付物
+- [`package.json`](package.json) — npm 包名，无构建
 - [`DESIGN.md`](DESIGN.md) — 定调
 - [`AGENTS.md`](AGENTS.md) — 接入方 / agent 的梯子和验证地板
 - [`prototype/index.html`](prototype/index.html) — 玩场
