@@ -1,0 +1,13 @@
+{"type":"user/message","data":{"content":[{"type":"text","text":"Prove the product headless profile path with one real tool round trip."}],"source":{"kind":"user"},"role":"user","id":"{{sessionId}}"}}
+{"type":"assistant/chunk","data":{"turn":1,"step":1,"chunk":{"type":"block-start","index":0,"blockType":"reasoning"}}}
+{"type":"assistant/chunk","data":{"turn":1,"step":1,"chunk":{"type":"reasoning-delta","index":0,"text":"Inspecting the task before the tool call."}}}
+{"type":"assistant/chunk","data":{"turn":1,"step":1,"chunk":{"type":"block-end","index":0,"block":{"type":"reasoning","text":"Inspecting the task before the tool call."}}}}
+{"type":"assistant/chunk","data":{"turn":1,"step":1,"chunk":{"type":"block-start","index":1,"blockType":"tool-call"}}}
+{"type":"assistant/chunk","data":{"turn":1,"step":1,"chunk":{"type":"tool-call-delta","index":1,"id":"cli-smoke-call","name":"bash","argumentsDelta":"{\"command\":\"printf CLI_TOOL_ROUND_TRIP\",\"description\":\"Prove the CLI tool round trip.\"}"}}}
+{"type":"assistant/chunk","data":{"turn":1,"step":1,"chunk":{"type":"block-end","index":1,"block":{"type":"tool-call","id":"cli-smoke-call","name":"bash","arguments":"{\"command\":\"printf CLI_TOOL_ROUND_TRIP\",\"description\":\"Prove the CLI tool round trip.\"}"}}}}
+{"type":"tool/call","data":{"turn":1,"step":1,"callId":"cli-smoke-call","name":"bash","arguments":"{\"command\":\"printf CLI_TOOL_ROUND_TRIP\",\"description\":\"Prove the CLI tool round trip.\"}"}}
+{"type":"tool/result","data":{"turn":1,"step":1,"message":{"source":{"kind":"tool","callId":"cli-smoke-call"},"content":[{"type":"tool-result","toolCallId":"cli-smoke-call","content":[{"type":"text","text":"CLI_TOOL_ROUND_TRIP"}],"isError":false}],"role":"user","id":"{{sessionId}}"}}}
+{"type":"assistant/chunk","data":{"turn":1,"step":2,"chunk":{"type":"block-start","index":0,"blockType":"text"}}}
+{"type":"assistant/chunk","data":{"turn":1,"step":2,"chunk":{"type":"text-delta","index":0,"text":"CLI tool round trip complete: CLI_TOOL_ROUND_TRIP"}}}
+{"type":"assistant/chunk","data":{"turn":1,"step":2,"chunk":{"type":"block-end","index":0,"block":{"type":"text","text":"CLI tool round trip complete: CLI_TOOL_ROUND_TRIP"}}}}
+{"type":"turn/end","data":{"turn":1,"reason":{"kind":"completed"}}}

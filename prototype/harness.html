@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="ps-page">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PicoStream · harness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../picostream.css" />
+  <style>
+    main { padding: 2.5rem 0 5rem; }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-family: var(--ps-serif);
+      font-size: 1.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--ps-ink);
+    }
+    .lede { margin: 0 0 2rem; font-family: var(--ps-serif); font-size: 1.05rem; }
+    .note { margin: 0 0 1.25rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0 0 1rem; align-items: center; }
+    .nav, .row button, .row a {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.875rem;
+    }
+    .nav a { color: var(--ps-muted); text-decoration: none; }
+    .nav a:hover, .nav a[aria-current="page"] { color: var(--ps-ink); }
+    .nav button, .row button {
+      appearance: none;
+      border: 0;
+      background: none;
+      padding: 0;
+      font: inherit;
+      color: var(--ps-muted);
+      cursor: pointer;
+    }
+    .row button {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: var(--ps-faint);
+    }
+    .nav button[aria-pressed="true"],
+    .row button[aria-pressed="true"],
+    .nav button:hover,
+    .row button:hover { color: var(--ps-ink); }
+    #tick {
+      margin: 0 0 1.5rem;
+      font-size: 0.8rem;
+      font-family: var(--ps-mono);
+      color: var(--ps-faint);
+    }
+    #paste {
+      display: none;
+      width: 100%;
+      min-height: 8rem;
+      margin: 0 0 1rem;
+      padding: 0.75rem;
+      border: 1px solid var(--ps-line);
+      background: var(--ps-well);
+      color: var(--ps-ink);
+      font: 0.8rem/1.5 var(--ps-mono);
+      resize: vertical;
+    }
+    #paste.is-on { display: block; }
+    footer { padding: 1.25rem 0 2rem; font-size: 0.8rem; }
+    footer a { color: inherit; }
+  </style>
+</head>
+<body>
+  <header class="ps-banner ps-shell">
+    <strong>PicoStream</strong>
+    <div class="nav">
+      <a href="index.html" data-i18n="navPlay"></a>
+      <a href="harness.html" aria-current="page">harness</a>
+      <button type="button" id="to-light" aria-pressed="true">light</button>
+      <button type="button" id="to-dark" aria-pressed="false">dark</button>
+      <button type="button" id="to-zh" aria-pressed="true">zh</button>
+      <button type="button" id="to-en" aria-pressed="false">en</button>
+    </div>
+  </header>
+
+  <main class="ps-shell">
+    <h1 data-i18n="title"></h1>
+    <p class="lede" data-i18n="lede"></p>
+    <p class="note" data-i18n="note"></p>
+    <div class="row">
+      <button type="button" id="tape-dsh" aria-pressed="true">DSH</button>
+      <button type="button" id="tape-headless" aria-pressed="false" data-i18n="tapeHeadless"></button>
+      <button type="button" id="tape-pi" aria-pressed="false">Pi</button>
+      <button type="button" id="tape-paste" aria-pressed="false" data-i18n="tapePaste"></button>
+    </div>
+    <div class="row">
+      <button type="button" id="replay" data-i18n="replay"></button>
+      <button type="button" id="cut" data-i18n="cut"></button>
+      <button type="button" id="spd-half" aria-pressed="false">½</button>
+      <button type="button" id="spd-1" aria-pressed="true">1×</button>
+      <button type="button" id="spd-2" aria-pressed="false">2×</button>
+      <button type="button" id="spd-dump" aria-pressed="false" data-i18n="dump"></button>
+    </div>
+    <textarea id="paste" spellcheck="false" data-i18n-placeholder="pasteHint"></textarea>
+    <p id="tick"></p>
+    <div class="ps-thread" id="session"></div>
+  </main>
+
+  <footer class="ps-shell"><span data-i18n="footerLead"></span> <a href="index.html">prototype</a> · <code>picostream.css</code></footer>
+
+  <script>
+    const I18N = {
+      zh: {
+        pageTitle: "PicoStream · harness",
+        title: "把他们的流接到纸上",
+        lede: "DeepSeek Harness 和 Pi Web 是自己的壳。CSS 套不进去。能测的是：用他们的事件流喂这份契约。",
+        note: "DSH 是密流标本。快照是 harness 自己的 headless 测试日志。Pi 是官方线协议同题重写，不是录下来的 pi-web 页。",
+        navPlay: "玩场",
+        tapeHeadless: "快照",
+        tapePaste: "粘贴",
+        replay: "重放",
+        cut: "打断",
+        dump: "瞬",
+        pasteHint: "粘贴 DSH stream-json / session.jsonl，或 Pi message_update 事件。一行一条 JSON。",
+        "plaque.ask": "问",
+        "plaque.reply": "答",
+        "plaque.think": "思",
+        "plaque.write": "写",
+        "plaque.tool": "器",
+        "plaque.done": "毕",
+        "plaque.steer": "改",
+        "plaque.break": "断",
+        footerLead: "回放",
+        cutLine: "已打断。栏是虚线，色走青紫。"
+      },
+      en: {
+        pageTitle: "PicoStream · harness",
+        title: "Their stream, this paper",
+        lede: "DeepSeek Harness and Pi Web own their shells. This CSS will not restyle them. What we can test is their event stream on this contract.",
+        note: "DSH is a dense tape. Snapshot is DSH's own headless test log. Pi is the official wire, same turn, not a recorded pi-web page.",
+        navPlay: "Play",
+        tapeHeadless: "Snap",
+        tapePaste: "Paste",
+        replay: "Replay",
+        cut: "Cut",
+        dump: "Dump",
+        pasteHint: "Paste DSH stream-json / session.jsonl, or Pi message_update events. One JSON object per line.",
+        "plaque.ask": "Ask",
+        "plaque.reply": "Reply",
+        "plaque.think": "Think",
+        "plaque.write": "Write",
+        "plaque.tool": "Tool",
+        "plaque.done": "Done",
+        "plaque.steer": "Steer",
+        "plaque.break": "Break",
+        footerLead: "Replay",
+        cutLine: "Cut. The rail is dashed violet."
+      }
+    };
+
+    const TAPES = {
+      dsh: "fixtures/dsh-stream.jsonl",
+      headless: "fixtures/dsh-headless.jsonl",
+      pi: "fixtures/pi-stream.jsonl"
+    };
+
+    const root = document.documentElement;
+    const lightBtn = document.getElementById("to-light");
+    const darkBtn = document.getElementById("to-dark");
+    const zhBtn = document.getElementById("to-zh");
+    const enBtn = document.getElementById("to-en");
+    const pasteBox = document.getElementById("paste");
+    const tickEl = document.getElementById("tick");
+    const session = document.getElementById("session");
+    const query = () => new URLSearchParams(location.search);
+    let lang = "zh";
+    let tape = "dsh";
+    let speed = 1;
+    let timer = 0;
+    let cut = false;
+    let gen = 0;
+    let pasted = "";
+
+    function t(key) {
+      return (I18N[lang] && I18N[lang][key]) || I18N.zh[key] || key;
+    }
+
+    function paint(dark) {
+      const freeze = document.createElement("style");
+      freeze.textContent = "*{transition:none!important}";
+      document.head.appendChild(freeze);
+      root.classList.toggle("dark", dark);
+      lightBtn.setAttribute("aria-pressed", String(!dark));
+      darkBtn.setAttribute("aria-pressed", String(dark));
+      window.getComputedStyle(freeze).opacity;
+      freeze.remove();
+    }
+
+    function applyLang(next) {
+      lang = next === "en" ? "en" : "zh";
+      root.lang = lang === "en" ? "en" : "zh-CN";
+      document.title = t("pageTitle");
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+        el.placeholder = t(el.dataset.i18nPlaceholder);
+      });
+      zhBtn.setAttribute("aria-pressed", String(lang === "zh"));
+      enBtn.setAttribute("aria-pressed", String(lang === "en"));
+    }
+
+    function setParam(key, value) {
+      const url = new URL(location.href);
+      url.searchParams.set(key, value);
+      history.replaceState(null, "", url);
+    }
+
+    function pickLang() {
+      const q = query().get("lang");
+      if (q === "en" || q === "zh") return q;
+      return (navigator.language || "zh").toLowerCase().startsWith("zh") ? "zh" : "en";
+    }
+
+    function syncTape() {
+      ["dsh", "headless", "pi", "paste"].forEach((name) => {
+        const btn = document.getElementById("tape-" + name);
+        if (btn) btn.setAttribute("aria-pressed", String(tape === name));
+      });
+      pasteBox.classList.toggle("is-on", tape === "paste");
+    }
+
+    function syncSpeed() {
+      const map = { 0.5: "spd-half", 1: "spd-1", 2: "spd-2", 0: "spd-dump" };
+      Object.entries(map).forEach(([val, id]) => {
+        document.getElementById(id).setAttribute("aria-pressed", String(Number(val) === speed));
+      });
+    }
+
+    lightBtn.onclick = () => { setParam("theme", "light"); paint(false); };
+    darkBtn.onclick = () => { setParam("theme", "dark"); paint(true); };
+    zhBtn.onclick = () => { setParam("lang", "zh"); applyLang("zh"); };
+    enBtn.onclick = () => { setParam("lang", "en"); applyLang("en"); };
+
+    const themeQ = query().get("theme");
+    paint(themeQ === "dark" || (themeQ !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches));
+    applyLang(pickLang());
+    const tapeQ = query().get("tape");
+    if (tapeQ === "headless" || tapeQ === "pi" || tapeQ === "paste" || tapeQ === "dsh") tape = tapeQ;
+    const spdQ = query().get("speed");
+    if (spdQ === "0.5" || spdQ === "2" || spdQ === "0") speed = Number(spdQ);
+    syncTape();
+    syncSpeed();
+
+    function later(ms) {
+      const wait = speed === 0 ? 0 : ms / speed;
+      return new Promise((resolve) => { timer = setTimeout(resolve, wait); });
+    }
+
+    function unwrap(raw) {
+      if (raw && raw.type === "session_event" && raw.event) return raw.event;
+      return raw;
+    }
+
+    function parseDump(text) {
+      const trimmed = text.trim();
+      if (!trimmed) return [];
+      if (trimmed.startsWith("[")) return JSON.parse(trimmed).map(unwrap);
+      return trimmed.split(/\n/).filter((line) => line.trim()).map((line) => unwrap(JSON.parse(line)));
+    }
+
+    function detect(events) {
+      for (const ev of events) {
+        const type = ev && ev.type;
+        if (!type) continue;
+        if (type.indexOf("/") !== -1) return "dsh";
+        if (type.indexOf("_") !== -1) return "pi";
+      }
+      return "dsh";
+    }
+
+    function textBits(node) {
+      if (!node) return "";
+      if (typeof node === "string") return node;
+      if (Array.isArray(node)) return node.map(textBits).filter(Boolean).join("");
+      if (node.text) return node.text;
+      if (node.content) return textBits(node.content);
+      return "";
+    }
+
+    function kindOf(name) {
+      const n = String(name || "").toLowerCase();
+      if (/^(read|read_file|cat)$/.test(n)) return "read";
+      if (/^(grep|search|glob|find)$/.test(n)) return "search";
+      if (/^(list|ls|listdir)$/.test(n)) return "list";
+      if (/^(write|edit|create|str_replace)$/.test(n)) return "write";
+      if (/^(bash|exec|shell|run_terminal_cmd)$/.test(n)) return "exec";
+      return "";
+    }
+
+    function parseArgs(raw) {
+      if (raw == null) return null;
+      if (typeof raw === "object") return raw;
+      try { return JSON.parse(raw); } catch { return null; }
+    }
+
+    function toolHint(name, args) {
+      const obj = parseArgs(args) || {};
+      let extra = obj.path || obj.file || obj.command || obj.description || obj.pattern || obj.objective || "";
+      if (typeof extra !== "string") extra = "";
+      if (extra.length > 52) extra = extra.slice(0, 51) + "…";
+      return extra ? name + " · " + extra : name;
+    }
+
+    function clauses(full) {
+      return full.split(/(?<=[。．.!?！？])\s*/).filter(Boolean);
+    }
+
+    function Thread() {
+      this.reset();
+    }
+
+    Thread.prototype.reset = function () {
+      session.innerHTML = "";
+      this.bot = null;
+      this.meta = null;
+      this.reason = null;
+      this.peek = null;
+      this.reasonBody = null;
+      this.tools = null;
+      this.voice = null;
+      this.caret = null;
+      this.thought = "";
+      this.mode = "text";
+      this.pending = "";
+      this.slots = Object.create(null);
+      this.wet = false;
+    };
+
+    Thread.prototype.plaque = function (key) {
+      if (this.meta) this.meta.textContent = t(key);
+    };
+
+    Thread.prototype.parkCaret = function (host) {
+      if (!this.caret || !host) return;
+      host.appendChild(this.caret);
+    };
+
+    Thread.prototype.user = function (text) {
+      if (this.wet) {
+        this.bot.dataset.stream = "steer";
+        this.plaque("plaque.steer");
+      }
+      const turn = document.createElement("section");
+      turn.className = "ps-turn";
+      turn.dataset.role = "user";
+      turn.innerHTML = '<p class="ps-meta"></p><p class="ps-voice"></p>';
+      turn.querySelector(".ps-meta").textContent = t("plaque.ask");
+      turn.querySelector(".ps-voice").textContent = text;
+      session.appendChild(turn);
+    };
+
+    Thread.prototype.ensureBot = function () {
+      if (this.bot) return;
+      this.bot = document.createElement("section");
+      this.bot.className = "ps-turn";
+      this.bot.dataset.role = "assistant";
+      this.bot.dataset.stream = "thinking";
+      this.bot.innerHTML =
+        '<p class="ps-meta"></p>' +
+        '<details class="ps-think" hidden><summary></summary><p></p></details>' +
+        '<div class="ps-tools" hidden></div>' +
+        '<div class="ps-voice"></div>' +
+        '<span class="ps-caret" aria-hidden="true"></span>';
+      this.meta = this.bot.querySelector(".ps-meta");
+      this.reason = this.bot.querySelector(".ps-think");
+      this.peek = this.reason.querySelector("summary");
+      this.reasonBody = this.reason.querySelector("p");
+      this.tools = this.bot.querySelector(".ps-tools");
+      this.voice = this.bot.querySelector(".ps-voice");
+      this.caret = this.bot.querySelector(".ps-caret");
+      this.plaque("plaque.reply");
+      session.appendChild(this.bot);
+      this.wet = true;
+    };
+
+    Thread.prototype.setStream = function (name) {
+      this.ensureBot();
+      this.bot.dataset.stream = name;
+      if (name === "thinking") this.plaque("plaque.think");
+      else if (name === "tool") this.plaque("plaque.tool");
+      else if (name === "typing" || name === "live") this.plaque("plaque.write");
+      else if (name === "settled") this.plaque("plaque.done");
+      else if (name === "error") this.plaque("plaque.break");
+      else if (name === "steer") this.plaque("plaque.steer");
+    };
+
+    Thread.prototype.think = function (delta) {
+      this.ensureBot();
+      if (!this.thought) this.setStream("thinking");
+      this.thought += delta;
+      this.reason.hidden = false;
+      this.reason.open = false;
+      this.reasonBody.textContent = this.thought;
+      const parts = clauses(this.thought);
+      this.peek.textContent = parts.slice(-3).join(lang === "en" ? " " : "");
+      this.parkCaret(this.peek);
+    };
+
+    Thread.prototype.dryThink = function () {
+      if (!this.thought || !this.peek) return;
+      const parts = clauses(this.thought);
+      this.peek.textContent = parts.slice(-1).join("");
+    };
+
+    Thread.prototype.slot = function (id, name, args) {
+      this.ensureBot();
+      this.setStream("tool");
+      this.tools.hidden = false;
+      let node = this.slots[id];
+      if (!node) {
+        node = document.createElement("details");
+        node.className = "ps-tool ps-enter";
+        node.open = true;
+        node.innerHTML = "<summary></summary>";
+        this.tools.appendChild(node);
+        this.slots[id] = node;
+      }
+      const kind = kindOf(name);
+      if (kind) node.dataset.kind = kind;
+      node.dataset.state = "running";
+      const hint = toolHint(name, args);
+      const bits = hint.split(" · ");
+      node.querySelector("summary").innerHTML = bits[1]
+        ? "<b></b> · "
+        : "<b></b>";
+      node.querySelector("b").textContent = bits[0];
+      if (bits[1]) node.querySelector("summary").appendChild(document.createTextNode(bits[1]));
+      this.parkCaret(node.querySelector("summary"));
+      return node;
+    };
+
+    Thread.prototype.finishTool = function (id, output, isError) {
+      const node = this.slots[id];
+      if (!node) return null;
+      node.dataset.state = isError ? "error" : "done";
+      if (output) {
+        let pre = node.querySelector("pre");
+        if (!pre) {
+          pre = document.createElement("pre");
+          pre.className = "ps-code";
+          node.appendChild(pre);
+        }
+        pre.textContent = output;
+      }
+      return node;
+    };
+
+    Thread.prototype.currentText = function () {
+      let node = this.voice.lastElementChild;
+      if (this.mode === "fence") {
+        if (!node || node.tagName !== "PRE") {
+          node = document.createElement("pre");
+          node.className = "ps-code ps-enter";
+          this.voice.appendChild(node);
+        }
+      } else {
+        if (!node || node.tagName !== "P") {
+          node = document.createElement("p");
+          this.voice.appendChild(node);
+        }
+      }
+      this.voice.querySelectorAll("[data-tail]").forEach((n) => { delete n.dataset.tail; });
+      node.dataset.tail = "";
+      return node;
+    };
+
+    Thread.prototype.flushVoice = function (chunk) {
+      this.ensureBot();
+      if (this.bot.dataset.stream !== "typing") {
+        this.dryThink();
+        this.setStream("typing");
+      }
+      this.pending += chunk;
+      while (this.pending) {
+        if (this.mode === "text") {
+          const at = this.pending.indexOf("```");
+          if (at === -1) {
+            this.currentText().appendChild(document.createTextNode(this.pending));
+            this.pending = "";
+          } else {
+            if (at) this.currentText().appendChild(document.createTextNode(this.pending.slice(0, at).replace(/\s+$/, "")));
+            const prev = this.voice.lastElementChild;
+            if (prev && prev.tagName === "P" && !prev.textContent.trim()) prev.remove();
+            this.pending = this.pending.slice(at + 3);
+            const nl = this.pending.indexOf("\n");
+            if (nl !== -1) {
+              const fence = this.voice.lastElementChild;
+              if (fence && fence.tagName === "PRE") fence.dataset.lang = this.pending.slice(0, nl).trim();
+              else {
+                this.mode = "fence";
+                const node = this.currentText();
+                if (this.pending.slice(0, nl).trim()) node.dataset.lang = this.pending.slice(0, nl).trim();
+              }
+              this.pending = this.pending.slice(nl + 1);
+              this.mode = "fence";
+            } else {
+              this.mode = "fence";
+            }
+          }
+        } else {
+          const at = this.pending.indexOf("```");
+          if (at === -1) {
+            this.currentText().appendChild(document.createTextNode(this.pending));
+            this.pending = "";
+          } else {
+            if (at) this.currentText().appendChild(document.createTextNode(this.pending.slice(0, at)));
+            this.pending = this.pending.slice(at + 3).replace(/^\n+/, "");
+            const done = this.voice.lastElementChild;
+            if (done) delete done.dataset.tail;
+            this.mode = "text";
+          }
+        }
+      }
+      this.parkCaret(this.currentText());
+    };
+
+    Thread.prototype.settle = function () {
+      if (!this.bot) return;
+      this.dryThink();
+      this.bot.querySelectorAll("[data-tail]").forEach((n) => { delete n.dataset.tail; });
+      if (this.caret) this.caret.remove();
+      this.caret = null;
+      delete this.bot.dataset.state;
+      this.setStream("settled");
+      this.wet = false;
+    };
+
+    Thread.prototype.break = function () {
+      if (!this.bot) this.ensureBot();
+      this.bot.dataset.stream = "error";
+      this.plaque("plaque.break");
+      delete this.bot.dataset.state;
+      if (this.caret) this.caret.remove();
+      this.caret = null;
+      if (!this.voice.textContent.trim()) {
+        const p = document.createElement("p");
+        p.textContent = t("cutLine");
+        this.voice.appendChild(p);
+      }
+      this.wet = false;
+    };
+
+    function ticks(text) {
+      if (speed === 0 || text.length <= 4) return [text];
+      const out = [];
+      let i = 0;
+      while (i < text.length) {
+        const ch = text[i];
+        const wide = ch > "\u2e7f";
+        const n = wide ? 1 : Math.min(3, text.length - i);
+        out.push(text.slice(i, i + n));
+        i += n;
+      }
+      return out;
+    }
+
+    async function emitText(text, write, gone) {
+      for (const piece of ticks(text)) {
+        if (gone()) return;
+        write(piece);
+        if (speed !== 0) await later(14 + Math.random() * 18);
+      }
+    }
+
+    function dshUser(ev) {
+      const source = ev.data && ev.data.source && ev.data.source.kind;
+      if (source && source !== "user") return "";
+      return textBits(ev.data && ev.data.content);
+    }
+
+    function dshToolResult(ev) {
+      const msg = ev.data && ev.data.message;
+      const blocks = (msg && msg.content) || [];
+      let isError = Boolean(ev.data && ev.data.error);
+      const texts = [];
+      blocks.forEach((block) => {
+        if (block.isError) isError = true;
+        texts.push(textBits(block.content || block));
+      });
+      return { text: texts.filter(Boolean).join("\n"), isError };
+    }
+
+    function piToolResult(ev) {
+      return {
+        text: textBits(ev.result),
+        isError: Boolean(ev.isError)
+      };
+    }
+
+    async function applyDsh(thread, ev, gone) {
+      const type = ev.type;
+      if (type === "user/message") {
+        const text = dshUser(ev);
+        if (text) thread.user(text);
+        return;
+      }
+      if (type === "assistant/chunk") {
+        const chunk = (ev.data && ev.data.chunk) || {};
+        if (chunk.type === "block-start" && chunk.blockType === "reasoning") thread.setStream("thinking");
+        if (chunk.type === "reasoning-delta" && chunk.text) await emitText(chunk.text, (s) => thread.think(s), gone);
+        if (chunk.type === "block-end" && chunk.block && chunk.block.type === "reasoning") thread.dryThink();
+        if (chunk.type === "block-start" && chunk.blockType === "text") thread.setStream("typing");
+        if (chunk.type === "text-delta" && chunk.text) await emitText(chunk.text, (s) => thread.flushVoice(s), gone);
+        if (chunk.type === "tool-call-delta") {
+          thread.slot(chunk.id || "tool", chunk.name, chunk.argumentsDelta);
+        }
+        return;
+      }
+      if (type === "tool/call") {
+        const data = ev.data || {};
+        thread.slot(data.callId || data.id || "tool", data.name, data.arguments);
+        return;
+      }
+      if (type === "tool/result") {
+        const data = ev.data || {};
+        const id = (data.message && data.message.source && data.message.source.callId) || data.callId || "tool";
+        const result = dshToolResult(ev);
+        const node = thread.finishTool(id, result.text, result.isError);
+        if (node) {
+          if (speed !== 0) await later(400);
+          if (!gone()) node.open = false;
+        }
+        return;
+      }
+      if (type === "turn/end") thread.settle();
+    }
+
+    async function applyPi(thread, ev, gone) {
+      const type = ev.type;
+      if (type === "message_start" && ev.message && ev.message.role === "user") {
+        const text = textBits(ev.message.content);
+        if (text) thread.user(text);
+        return;
+      }
+      if (type === "message_update") {
+        const inner = ev.assistantMessageEvent || {};
+        if (inner.type === "thinking_start") thread.setStream("thinking");
+        if (inner.type === "thinking_delta" && inner.delta) await emitText(inner.delta, (s) => thread.think(s), gone);
+        if (inner.type === "thinking_end") thread.dryThink();
+        if (inner.type === "text_start") thread.setStream("typing");
+        if (inner.type === "text_delta" && inner.delta) await emitText(inner.delta, (s) => thread.flushVoice(s), gone);
+        if (inner.type === "toolcall_end" && inner.toolCall) {
+          thread.slot(inner.toolCall.id || "tool", inner.toolCall.name, inner.toolCall.arguments);
+        }
+        return;
+      }
+      if (type === "tool_execution_start") {
+        thread.slot(ev.toolCallId || "tool", ev.toolName, ev.args);
+        return;
+      }
+      if (type === "tool_execution_end") {
+        const result = piToolResult(ev);
+        const node = thread.finishTool(ev.toolCallId || "tool", result.text, result.isError);
+        if (node) {
+          if (speed !== 0) await later(400);
+          if (!gone()) node.open = false;
+        }
+        return;
+      }
+      if (type === "turn_end") thread.settle();
+    }
+
+    async function playEvents(events, source) {
+      const mine = ++gen;
+      const gone = () => cut || mine !== gen;
+      const thread = new Thread();
+      const apply = source === "pi" ? applyPi : applyDsh;
+      for (let i = 0; i < events.length; i += 1) {
+        if (gone()) return;
+        const ev = events[i];
+        tickEl.textContent = (i + 1) + " / " + events.length + " · " + (ev.type || "?");
+        await apply(thread, ev, gone);
+        if (gone()) return;
+        if (speed !== 0) await later(40);
+      }
+      if (!gone() && thread.wet) thread.settle();
+    }
+
+    async function loadTape() {
+      if (tape === "paste") return parseDump(pasteBox.value || pasted);
+      const href = TAPES[tape];
+      const res = await fetch(href);
+      if (!res.ok) throw new Error(href + " " + res.status);
+      return parseDump(await res.text());
+    }
+
+    async function play() {
+      cut = false;
+      clearTimeout(timer);
+      tickEl.textContent = "";
+      session.innerHTML = "";
+      let events = [];
+      try {
+        events = await loadTape();
+      } catch (err) {
+        tickEl.textContent = String(err.message || err);
+        return;
+      }
+      if (!events.length) {
+        tickEl.textContent = tape === "paste" ? t("pasteHint") : "";
+        return;
+      }
+      await playEvents(events, detect(events));
+    }
+
+    function interrupt() {
+      cut = true;
+      clearTimeout(timer);
+      const bot = session.querySelector('.ps-turn[data-role="assistant"]');
+      if (!bot) return;
+      bot.dataset.stream = "error";
+      delete bot.dataset.state;
+      bot.querySelectorAll(".ps-caret").forEach((n) => n.remove());
+      const voice = bot.querySelector(".ps-voice");
+      if (voice && !voice.textContent.trim()) {
+        voice.innerHTML = "<p></p>";
+        voice.querySelector("p").textContent = t("cutLine");
+      }
+      const meta = bot.querySelector(".ps-meta");
+      if (meta) meta.textContent = t("plaque.break");
+    }
+
+    function chooseTape(name) {
+      tape = name;
+      setParam("tape", name);
+      syncTape();
+      if (name !== "paste") play();
+    }
+
+    function chooseSpeed(value) {
+      speed = value;
+      setParam("speed", String(value));
+      syncSpeed();
+    }
+
+    document.getElementById("tape-dsh").onclick = () => chooseTape("dsh");
+    document.getElementById("tape-headless").onclick = () => chooseTape("headless");
+    document.getElementById("tape-pi").onclick = () => chooseTape("pi");
+    document.getElementById("tape-paste").onclick = () => chooseTape("paste");
+    document.getElementById("spd-half").onclick = () => chooseSpeed(0.5);
+    document.getElementById("spd-1").onclick = () => chooseSpeed(1);
+    document.getElementById("spd-2").onclick = () => chooseSpeed(2);
+    document.getElementById("spd-dump").onclick = () => chooseSpeed(0);
+    document.getElementById("replay").onclick = play;
+    document.getElementById("cut").onclick = interrupt;
+    pasteBox.addEventListener("change", () => { pasted = pasteBox.value; });
+    session.addEventListener("dragover", (ev) => ev.preventDefault());
+    session.addEventListener("drop", async (ev) => {
+      ev.preventDefault();
+      const file = ev.dataTransfer.files && ev.dataTransfer.files[0];
+      if (!file) return;
+      pasteBox.value = await file.text();
+      pasted = pasteBox.value;
+      tape = "paste";
+      setParam("tape", "paste");
+      syncTape();
+      play();
+    });
+
+    if (tape !== "paste") play();
+  </script>
+</body>
+</html>
