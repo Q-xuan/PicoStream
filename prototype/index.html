@@ -351,20 +351,19 @@
       const caret = bot.querySelector(":scope > .wet-caret");
       const spoken = t("play.spoken");
 
-      function think(full, wet) {
+      function think(full) {
         reason.hidden = false;
         reason.classList.add("wet-enter");
         reason.open = false;
         const parts = clauses(full);
-        const take = wet ? parts.slice(-3) : parts.slice(-1);
-        peek.textContent = take.join(lang === "en" ? " " : "");
+        peek.textContent = parts.slice(-1).join(lang === "en" ? " " : "");
         reasonBody.textContent = full;
       }
 
       const gone = () => cut || mine !== gen;
       await later(700);
       if (gone()) return;
-      think(t("play.thinkWet"), true);
+      think(t("play.thinkWet"));
       peek.appendChild(caret);
 
       await later(500);
@@ -422,7 +421,7 @@
       write.open = false;
       delete bot.dataset.state;
       bot.dataset.stream = "typing";
-      think(t("play.thinkDry"), false);
+      think(t("play.thinkDry"));
 
       const p = document.createElement("p");
       p.dataset.tail = "";
