@@ -285,14 +285,6 @@ details.wet-think,
   text-overflow: ellipsis;
 }
 
-.wet-turn[data-stream="thinking"] .wet-think:not([open]) summary {
-  white-space: normal;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  text-overflow: unset;
-}
-
 .wet-turn[data-stream="settled"] .wet-think:not([open]),
 .wet-turn[data-stream="steer"] .wet-think:not([open]) { color: var(--wet-faint); }
 
