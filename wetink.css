@@ -280,17 +280,22 @@ details.wet-think,
 .wet-think:not([open]) { margin-bottom: 0.45rem; }
 
 .wet-think:not([open]) summary {
+  width: max-content;
+  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.wet-turn[data-stream="thinking"] .wet-think:not([open]) summary {
-  white-space: normal;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  text-overflow: unset;
+.wet-think:not([open]) summary:has(> .wet-caret) {
+  padding-inline-end: calc(2px + 0.24em);
+}
+
+.wet-think:not([open]) summary > .wet-caret {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: calc(50% - 0.525em);
+  margin-inline-start: 0;
 }
 
 .wet-turn[data-stream="settled"] .wet-think:not([open]),

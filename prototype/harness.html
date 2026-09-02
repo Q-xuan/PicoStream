@@ -402,7 +402,7 @@
       this.reason.open = false;
       this.reasonBody.textContent = this.thought;
       const parts = clauses(this.thought);
-      this.peek.textContent = parts.slice(-3).join(lang === "en" ? " " : "");
+      this.peek.textContent = parts.slice(-1).join(lang === "en" ? " " : "");
       this.parkCaret(this.peek);
     };
 
