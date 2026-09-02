@@ -1,3 +1,5 @@
+![石上墨迹：思考折起一行，朱红 caret 在粉墙上写墨](docs/wetink-stream.gif)
+
 # wetink
 
 给本地 agent 用的 Astro Nano 风格流式体感 CSS。无构建、无框架。  
