@@ -309,10 +309,20 @@
     let cut = false;
     let gen = 0;
 
+    function stop() {
+      clearTimeout(timer);
+      cancelAnimationFrame(timer);
+      timer = 0;
+    }
+
     function later(ms) {
       return new Promise((resolve) => {
         timer = setTimeout(resolve, ms);
       });
+    }
+
+    function frame() {
+      return new Promise((resolve) => { timer = requestAnimationFrame(() => resolve()); });
     }
 
     function clauses(full) {
@@ -339,7 +349,7 @@
 
     async function play() {
       const mine = ++gen;
-      clearTimeout(timer);
+      stop();
       cut = false;
       mount();
       const bot = document.getElementById("bot");
@@ -427,11 +437,16 @@
       p.dataset.tail = "";
       voice.appendChild(p);
       p.appendChild(caret);
-
-      for (let i = 1; i <= spoken.length; i += 1) {
-        if (gone()) return;
-        p.insertBefore(document.createTextNode(spoken.slice(i - 1, i)), caret);
-        await later(14 + Math.random() * 22);
+      const ink = document.createTextNode("");
+      p.insertBefore(ink, caret);
+      const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (still) ink.appendData(spoken);
+      else {
+        for (let i = 0; i < spoken.length; i += 1) {
+          if (gone()) return;
+          ink.appendData(spoken.charAt(i));
+          await frame();
+        }
       }
 
       if (gone()) return;
@@ -452,7 +467,7 @@
 
     function interrupt() {
       cut = true;
-      clearTimeout(timer);
+      stop();
       const bot = document.getElementById("bot");
       if (!bot) return;
       bot.dataset.stream = "error";
