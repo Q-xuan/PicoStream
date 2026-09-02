@@ -179,6 +179,13 @@
     let cut = false;
     let gen = 0;
     let pasted = "";
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function stop() {
+      clearTimeout(timer);
+      cancelAnimationFrame(timer);
+      timer = 0;
+    }
 
     function t(key) {
       return (I18N[lang] && I18N[lang][key]) || I18N.zh[key] || key;
@@ -253,7 +260,27 @@
 
     function later(ms) {
       const wait = speed === 0 ? 0 : ms / speed;
-      return new Promise((resolve) => { timer = setTimeout(resolve, wait); });
+      return new Promise((resolve) => {
+        if (wait <= 0) { resolve(); return; }
+        timer = setTimeout(resolve, wait);
+      });
+    }
+
+    function frame() {
+      return new Promise((resolve) => { timer = requestAnimationFrame(() => resolve()); });
+    }
+
+    function isInk(ev) {
+      if (!ev) return false;
+      if (ev.type === "assistant/chunk") {
+        const kind = ev.data && ev.data.chunk && ev.data.chunk.type;
+        return kind === "reasoning-delta" || kind === "text-delta";
+      }
+      if (ev.type === "message_update") {
+        const kind = ev.assistantMessageEvent && ev.assistantMessageEvent.type;
+        return kind === "thinking_delta" || kind === "text_delta";
+      }
+      return false;
     }
 
     function unwrap(raw) {
@@ -311,8 +338,26 @@
       return extra ? name + " · " + extra : name;
     }
 
-    function clauses(full) {
-      return full.split(/(?<=[。．.!?！？])\s*/).filter(Boolean);
+    function trailTicks(s) {
+      if (s.endsWith("``")) return s.length - 2;
+      if (s.endsWith("`")) return s.length - 1;
+      return s.length;
+    }
+
+    function peekOf(full, n) {
+      let cuts = 0;
+      for (let i = full.length - 1; i >= 0; i -= 1) {
+        const ch = full[i];
+        if (ch === "。" || ch === "．" || ch === "." || ch === "!" || ch === "?" || ch === "！" || ch === "？") {
+          cuts += 1;
+          if (cuts === n + 1) {
+            let start = i + 1;
+            while (start < full.length && full[start] === " ") start += 1;
+            return full.slice(start);
+          }
+        }
+      }
+      return full;
     }
 
     function Thread() {
@@ -334,6 +379,9 @@
       this.pending = "";
       this.slots = Object.create(null);
       this.wet = false;
+      this.tail = null;
+      this.peekInk = null;
+      this.reasonInk = null;
     };
 
     Thread.prototype.plaque = function (key) {
@@ -342,7 +390,26 @@
 
     Thread.prototype.parkCaret = function (host) {
       if (!this.caret || !host) return;
-      host.appendChild(this.caret);
+      if (this.caret.parentNode !== host) host.appendChild(this.caret);
+    };
+
+    Thread.prototype.markTail = function (node) {
+      if (this.tail === node) return;
+      if (this.tail) delete this.tail.dataset.tail;
+      this.tail = node;
+      if (node) node.dataset.tail = "";
+    };
+
+    Thread.prototype.ink = function (node, text) {
+      if (!node || !text) return;
+      const here = this.caret && this.caret.parentNode === node;
+      let bit = here ? this.caret.previousSibling : node.lastChild;
+      if (!bit || bit.nodeType !== 3) {
+        bit = document.createTextNode("");
+        if (here) node.insertBefore(bit, this.caret);
+        else node.appendChild(bit);
+      }
+      bit.appendData(text);
     };
 
     Thread.prototype.user = function (text) {
@@ -400,16 +467,24 @@
       this.thought += delta;
       this.reason.hidden = false;
       this.reason.open = false;
-      this.reasonBody.textContent = this.thought;
-      const parts = clauses(this.thought);
-      this.peek.textContent = parts.slice(-1).join(lang === "en" ? " " : "");
+      if (!this.reasonInk) {
+        this.reasonBody.textContent = "";
+        this.reasonInk = document.createTextNode("");
+        this.reasonBody.appendChild(this.reasonInk);
+      }
+      this.reasonInk.appendData(delta);
+      if (!this.peekInk) {
+        this.peek.textContent = "";
+        this.peekInk = document.createTextNode("");
+        this.peek.appendChild(this.peekInk);
+      }
+      this.peekInk.nodeValue = peekOf(this.thought, 1);
       this.parkCaret(this.peek);
     };
 
     Thread.prototype.dryThink = function () {
-      if (!this.thought || !this.peek) return;
-      const parts = clauses(this.thought);
-      this.peek.textContent = parts.slice(-1).join("");
+      if (!this.thought || !this.peekInk) return;
+      this.peekInk.nodeValue = peekOf(this.thought, 1);
     };
 
     Thread.prototype.slot = function (id, name, args) {
@@ -469,8 +544,7 @@
           this.voice.appendChild(node);
         }
       }
-      this.voice.querySelectorAll("[data-tail]").forEach((n) => { delete n.dataset.tail; });
-      node.dataset.tail = "";
+      this.markTail(node);
       return node;
     };
 
@@ -485,40 +559,45 @@
         if (this.mode === "text") {
           const at = this.pending.indexOf("```");
           if (at === -1) {
-            this.currentText().appendChild(document.createTextNode(this.pending));
-            this.pending = "";
-          } else {
-            if (at) this.currentText().appendChild(document.createTextNode(this.pending.slice(0, at).replace(/\s+$/, "")));
-            const prev = this.voice.lastElementChild;
-            if (prev && prev.tagName === "P" && !prev.textContent.trim()) prev.remove();
-            this.pending = this.pending.slice(at + 3);
-            const nl = this.pending.indexOf("\n");
-            if (nl !== -1) {
-              const fence = this.voice.lastElementChild;
-              if (fence && fence.tagName === "PRE") fence.dataset.lang = this.pending.slice(0, nl).trim();
-              else {
-                this.mode = "fence";
-                const node = this.currentText();
-                if (this.pending.slice(0, nl).trim()) node.dataset.lang = this.pending.slice(0, nl).trim();
-              }
-              this.pending = this.pending.slice(nl + 1);
-              this.mode = "fence";
-            } else {
-              this.mode = "fence";
-            }
+            const keep = trailTicks(this.pending);
+            if (keep) this.ink(this.currentText(), this.pending.slice(0, keep));
+            this.pending = this.pending.slice(keep);
+            break;
           }
+          const rest = this.pending.slice(at + 3);
+          const nl = rest.indexOf("\n");
+          if (nl === -1) {
+            if (at) this.ink(this.currentText(), this.pending.slice(0, at).replace(/\s+$/, ""));
+            this.pending = this.pending.slice(at);
+            break;
+          }
+          if (at) this.ink(this.currentText(), this.pending.slice(0, at).replace(/\s+$/, ""));
+          const prev = this.voice.lastElementChild;
+          if (prev && prev.tagName === "P" && !prev.textContent.trim()) {
+            if (this.tail === prev) this.tail = null;
+            prev.remove();
+          }
+          this.mode = "fence";
+          const node = this.currentText();
+          const langName = rest.slice(0, nl).trim();
+          if (langName) node.dataset.lang = langName;
+          this.pending = rest.slice(nl + 1);
         } else {
           const at = this.pending.indexOf("```");
           if (at === -1) {
-            this.currentText().appendChild(document.createTextNode(this.pending));
-            this.pending = "";
-          } else {
-            if (at) this.currentText().appendChild(document.createTextNode(this.pending.slice(0, at)));
-            this.pending = this.pending.slice(at + 3).replace(/^\n+/, "");
-            const done = this.voice.lastElementChild;
-            if (done) delete done.dataset.tail;
-            this.mode = "text";
+            const keep = trailTicks(this.pending);
+            if (keep) this.ink(this.currentText(), this.pending.slice(0, keep));
+            this.pending = this.pending.slice(keep);
+            break;
           }
+          if (at) this.ink(this.currentText(), this.pending.slice(0, at));
+          this.pending = this.pending.slice(at + 3).replace(/^\n+/, "");
+          const done = this.voice.lastElementChild;
+          if (done) {
+            delete done.dataset.tail;
+            if (this.tail === done) this.tail = null;
+          }
+          this.mode = "text";
         }
       }
       this.parkCaret(this.currentText());
@@ -528,6 +607,7 @@
       if (!this.bot) return;
       this.dryThink();
       this.bot.querySelectorAll("[data-tail]").forEach((n) => { delete n.dataset.tail; });
+      this.tail = null;
       if (this.caret) this.caret.remove();
       this.caret = null;
       delete this.bot.dataset.state;
@@ -550,25 +630,30 @@
       this.wet = false;
     };
 
-    function ticks(text) {
-      if (speed === 0 || text.length <= 4) return [text];
-      const out = [];
-      let i = 0;
-      while (i < text.length) {
-        const ch = text[i];
-        const wide = ch > "\u2e7f";
-        const n = wide ? 1 : Math.min(3, text.length - i);
-        out.push(text.slice(i, i + n));
-        i += n;
+    function bite(text, i, budget) {
+      let end = i;
+      let weight = 0;
+      while (end < text.length && weight < budget) {
+        weight += text.charCodeAt(end) > 0x2e7f ? 1 : 0.35;
+        end += 1;
       }
-      return out;
+      return end;
     }
 
     async function emitText(text, write, gone) {
-      for (const piece of ticks(text)) {
+      if (!text) return;
+      if (speed === 0 || still.matches) {
+        write(text);
+        return;
+      }
+      let i = 0;
+      const budget = speed === 0.5 ? 0.7 : speed >= 2 ? 2.2 : 1.1;
+      while (i < text.length) {
         if (gone()) return;
-        write(piece);
-        if (speed !== 0) await later(14 + Math.random() * 18);
+        const end = bite(text, i, budget);
+        write(text.slice(i, end));
+        i = end;
+        await frame();
       }
     }
 
@@ -681,7 +766,7 @@
         tickEl.textContent = (i + 1) + " / " + events.length + " · " + (ev.type || "?");
         await apply(thread, ev, gone);
         if (gone()) return;
-        if (speed !== 0) await later(40);
+        if (speed !== 0 && !isInk(ev)) await later(40);
       }
       if (!gone() && thread.wet) thread.settle();
     }
@@ -696,7 +781,7 @@
 
     async function play() {
       cut = false;
-      clearTimeout(timer);
+      stop();
       tickEl.textContent = "";
       session.innerHTML = "";
       let events = [];
@@ -715,7 +800,7 @@
 
     function interrupt() {
       cut = true;
-      clearTimeout(timer);
+      stop();
       const bot = session.querySelector('.wet-turn[data-role="assistant"]');
       if (!bot) return;
       bot.dataset.stream = "error";

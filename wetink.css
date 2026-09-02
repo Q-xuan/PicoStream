@@ -121,7 +121,7 @@ html.wet-page ::selection {
   gap: 2rem;
 }
 
-.wet-turn { position: relative; min-width: 0; }
+.wet-turn { position: relative; min-width: 0; contain: layout; }
 
 .wet-turn[data-role="user"] {
   padding-right: 1rem;
@@ -489,6 +489,7 @@ details.wet-think p { margin: 0; padding-left: var(--wet-mark); }
 .wet-turn[data-stream="tool"][data-state="running"] .wet-caret {
   display: inline-block;
   animation: wet-breathe 1.25s var(--wet-ease) infinite;
+  will-change: opacity;
 }
 
 .wet-turn[data-stream="error"] .wet-caret { background: var(--wet-error); }
