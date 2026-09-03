@@ -18,38 +18,24 @@ GitHub Pages：
 
 本地：仓库根目录 `python3 -m http.server 8080`，打开 http://127.0.0.1:8080/prototype/ 。
 
-推 `main` 会打下一个 patch tag（没有 tag 则从 `v0.1.0` 起）、打包 zip / npm tarball、发 Release、部署 Pages，包已在 npm 上则再发一版。手动：Actions → release → Run workflow，可填 `vX.Y.Z`。本地打 tag：`git tag vX.Y.Z && git push origin vX.Y.Z`。若 Actions 里 `github-pages` 环境要批准，点一次即可。
-
-第一次上 npm 要本机发一版（之后 CI 用 Trusted Publisher，不必再放 token）。包名是 `wetink`。
-
-```
-npm publish --access public
-```
-
-然后到 npmjs.com → wetink → Trusted Publisher，填 `Q-xuan` / `wetink` / `release.yml`，允许 publish。有 `NPM_TOKEN` secret 也可以，CI 会走 token。
+推 `main` 会打下一个 patch tag、打包 zip / npm tarball、发 Release、部署 Pages，并在 npm 发下一版。手动：Actions → release → Run workflow，可填 `vX.Y.Z`。本地打 tag：`git tag vX.Y.Z && git push origin vX.Y.Z`。若 Actions 里 `github-pages` 环境要批准，点一次即可。
 
 ## 引入
-
-```html
-<link rel="stylesheet" href="wetink.css" />
-<html class="wet-page">
-```
-
-npm（上架后）：
 
 ```
 npm i wetink
 ```
 
 ```html
-<link rel="stylesheet" href="node_modules/wetink/wetink.css" />
-```
-
-CDN 跟 npm，不必另发：
-
-```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wetink/wetink.css" />
 <link rel="stylesheet" href="https://unpkg.com/wetink/wetink.css" />
+<html class="wet-page">
+```
+
+`npm i` 之后也可以 `node_modules/wetink/wetink.css`。克隆仓库则链本地文件：
+
+```html
+<link rel="stylesheet" href="wetink.css" />
 ```
 
 字体按需加载 Inter + Noto Serif SC / Lora；不加载则走系统回退。亮/暗：`html.dark` 或 `data-theme="dark"`。语言：`html lang`。`:lang(en)` 时正文衬线改走 Lora，匾额字距收紧并大写。短匾由接入方按语言填写，CSS 不写死文案。
